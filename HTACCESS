@@ -1,0 +1,3 @@
+Options Includes FollowSymLinks +ExecCGI
+AddHandler cgi-script .py .pl .cgi
+DirectoryIndex pe_pplog.pl

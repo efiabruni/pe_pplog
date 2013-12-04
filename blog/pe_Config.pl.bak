@@ -1,0 +1,107 @@
+## This is the Configuration file for the blog, it is backed up by pe_Config.pl.bak
+## Edit away!
+
+# Required settings for the blog to work
+our $config_adminPass = 'puppy';												# Admin password for adding entries
+																				
+##If you don't want to change anything else, the rest is optional
+#Personal settings
+our $config_blogHeader= 'pe_pplog';												# on top of page
+our $config_blogFooter='';														# on bottom of page
+our $config_blogTitle = 'blog';													# Blog title 
+
+#Folders:																		# . = in the same path as the pe_pplog.pl and the pe_admin.pl file
+our $config_DatabaseFolder = './blog';										# Full path	should be outside of server home, but needs to be read and writable by server
+our $config_smiliesFolder = '/pe_pplog/images/smilies';									# for the smilies, add and change smilies as you wish, path from server home
+our $config_currentStyleFolder = '/pe_pplog/css';										# Styles folder 
+our $config_currentStyleSheet = 'style.css';
+our $config_tmpFolder = '/tmp';													# path to the tmp folder
+
+#Look and Feel:
+our $config_enableJQuery = 1;													# Is needed for lightboxes and other special effects to work, and if you want to put custom HMTL in the head
+our $config_entriesPerPage = 5;													# For pagination... How many
+our $config_maxPagesDisplayed = 5;												# Maximum number of pages displayed at the 
+our $config_gmt = +4;															# Your GMT, +4 is Chile
+our $config_entriesOnRSS = 0;													# 0 = ALL ENTRIES, if you want a limit, change t
+our $config_lightboxOpt = q\theme:'dark_rounded', social_tools: false\ ;                            # add options for lightboxes here			
+
+#Menu options:
+our $config_menuEntriesLimit = 10;												# Limits of entries to show in the menu
+our @config_menuLinks = qw(' http://puppylinux.com/,Puppy_Linux ', ' https://code.google.com/p/pplog/,Pup_pplog ', ' http://pplog.scottjarvis.com/,SJPPlog ', ' http://tine.pagekite.me/blog/,pe_pplog ');
+
+our $config_showLatestComments = 1;												# Show latest comments on the menu
+our $config_showLatestCommentsLimit = 10;										# Show 10 latest comments
+
+our $config_showHits = 1;														# Want to show how many users are 
+our $config_showUsersOnline = 0;												# Wanna show how many users are browsing 
+our $config_usersOnlineTimeout = 120;											# How long is an user considered online? In 
+
+#Comments settings:
+our $config_allowComments = 1;													# Allow comments
+our @config_commentsForbiddenAuthors = qw/admin administrator/;					# These are the usernames that normal users, first name is default for Admin comments 
+
+our $config_commentsSecurityCode = 1;											# Allow security code for comments (good idea unless you like spam)
+our $config_securityQuestionOnComments = 0;										# Allow the option to display a question 
+our $config_commentsSecurityQuestion = 'Name of the Puppy Linux mascot?';		# You shall change it, choose a question you like
+our $config_commentsSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
+
+our $config_bbCodeOnCommentaries = 1;											# Allow BBCODE buttons on comments entry page
+our $config_commentsMaxLenght = 2000;											# Comment maximum characters
+our $config_commentsPerPage = 20;												# How many comments will be shown 									
+
+our $config_sendMailWithNewComment = 0;											# Receive a mail when someone posts a 
+our $config_sendMailWithNewCommentMail = 'me@example.com';						# Email adress to send mail if 		
+
+#For search engines:
+our $config_metaRevisitAfter = 1;												# This is for search Engines... How often will 
+our $config_metaDescription = 'pe_pplog';				            		    # Also for search engines
+our $config_metaKeywords = 'post, perl, blog';			  						# Also for search engines...
+			
+#Security
+our $config_useHTTPSlogin = 0;													# choose 1 if you want it only to be possible to login when using a secure connection
+our $config_randomString = 'zjhd092nmbd20dbJASDK1BFGAB1';						# This is for password encryption... Edit if you wish
+our @config_ipBan = qw/202.325.35.145 165.265.26.65/;							# 2 random IPS, sorry if it is yours... Just edit if that is the case
+our $config_bannedMessage = 'Sorry, you have been banned.';						# This message will appear when an user is banned
+
+#other:
+our $config_dbFilesExtension = 'ppl';											# Extension of the files used as databases	
+
+#adding things
+our @config_pluginsBlog = qw(contact);											#available: contact Add here the plugin files you want to use
+our @config_pluginsAdmin = qw(editConfig newGallery);							#available: editConfig newGallery
+our $config_contactAddress = ''; 												#for contact form plugin
+	
+our $config_customMenuHTMLtop = ''; 											# eg a reddit button: <a target="_blank" href="http://reddit.com/submit?url=http://'.$ENV{'HTTP_HOST'}.$ENV{'REQUEST_URI'}.'">Reddit This <img border="0" src="reddit.gif" /></a>';								
+our $config_customMenuHTMLbottom = '';											# HTML here, will appear in the bottom of the menu of the main blog
+our $config_customHTMLpost = '';												# a place for social buttons
+our $config_customHTMLhead = '';												# for any script you might wish to add to the main blog									
+our $config_customHTMLadmin = '';												# for adding scripts to the admin page
+
+return 1;
+
+#Changelog for Config options:
+
+#Taken out $config options are:
+#$allow Bbcode buttons 
+#$config_useWYSIWYG 
+#$config_allowHMTLOnEntries (is now a checkbox)
+#$config_textAreaCols  and Rows (set to 15 and 50)
+#$config_searchMinLength hardcoded to 4	
+#$config:commentsDescending and set newest first as default
+#$config_onlyNumbersOnCAPTCHA and  $config_CAPTCHALenght (set 8 numbers and letters as default )
+#$config_showGmtOnFooter 
+#$config_allowReddit (replace by custom html)
+#$config_allowCustomHTML 
+#$config_menuLinksHeader
+
+#Added $config options are: 
+#$config_blogHeader 
+#$config_blogFooter
+#$config_tmpFolder
+#$config_customHTMLtop (in menu)
+#$config_customHTMLpost
+#$config_customHTMLhead (for scripts)
+#$config_DatabaseFolder
+#$config_serverRoot
+#@config_pluginsAdmin
+#@config_pluginsBlog

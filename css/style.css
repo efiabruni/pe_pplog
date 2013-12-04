@@ -1,0 +1,226 @@
+/****************************************
+*	This is the style sheet of PPLOG	*
+*	Edit this as you wish.				*
+*	Designed by Federico Ramírez		*
+*	A.K.A fedekun and Efia	    	    *
+****************************************/
+
+
+
+body {
+	font-family: "Liberation Sans", "Century Gothic",  "Lucida Sans Unicode","Droid Sans" ,sans-serif;
+	font-size: 14px;
+	color: #4D4D4D;
+	background-color: white;
+	background-image: url(menu.jpg);
+	background-position: 50% 30px;
+	background-repeat: no-repeat;
+	width: 900px;
+	margin-left:auto;
+    margin-right:auto;
+}
+
+header {
+	height: 280px;
+}
+h1#header {
+	color: white;
+	font-size: 51px;
+	font-weight:normal;
+	margin-top: 60px;
+	margin-left:auto;
+    margin-right:auto;
+}
+
+div#header{
+	background:white;
+	opacity: 0.9;
+}
+div#header a {
+	color: #32619F;
+	text-transform: capitalize;
+	padding-left:10px;
+	padding-right:20px;
+	text-decoration:none;
+	font-size: 15px;
+	letter-spacing: -1px;
+}
+div#header a:hover {background-color:#32619F; color:white;}
+
+#header ul.menu {margin-left:-4%; }
+#header .menu li {list-style:none; position:relative; float:left; background:white; opacity:0.9;}
+#header .drop a {display:block; color:white; padding:10px;}
+#header .drop li {float:none; background:#32619F;}
+#header .drop{display:none; list-style:none;}
+#header .menu:hover ul{display:block; position:absolute; width:200px; max-height:300px; overflow-y:scroll;}
+
+a#mobile
+{font-size:0px;float:right; background:#1D3D0F; color:white;}
+
+form#mobile{display:none;}
+
+table {
+	font-size: 14px;
+	text-align: left;
+}
+
+ input, button, select, radio {
+	margin: 1px;
+	padding: 2px;
+    /* background-color: white;
+	border: 1px outset #6E4C30;*/
+	max-width: 400px;
+	color: #4D4D4D;
+	font-family: "Liberation Sans", "Century Gothic",  "Lucida Sans Unicode", "Droid Sans" ,sans-serif;
+	font-size: 14px;
+}
+
+textarea, pre {
+
+	padding: 2px;
+	margin: 2px;
+	background-color: #E5E5E5;
+	border: 1px inset #BFBFBF;
+	max-width: 600px;
+	max-height: 400px;
+	color: #4D4D4D;
+	font-family: serif;
+	font-size: 14px;
+	overflow: scroll;
+	}
+	
+*::-moz-selection {
+	background-color:#6E4C30;
+	color: white;
+}
+
+a#flip {color:#4D4D4D;font-weight:bold;}
+
+nav  {
+	float: right;
+	margin-top:5px;
+	width: 200px;
+	letter-spacing: -1px;
+	background-color: white;
+}
+
+nav h1 {
+	color: #1D3D0F;
+	padding: 0px;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	font-size: 16px;
+}
+
+nav a {
+	display: block;
+	color: #4D4D4D;
+	text-transform: capitalize;
+	padding-left: 5px;
+	text-decoration: none;
+}
+
+a:hover {font-style:italic; text-shadow:0.3px 0.3px}
+.thumb {height:80px;}
+.thumb:hover{ border-width: 1px; border-color:white; border-style:outset;}
+
+div#content {
+	float: left;
+	padding-left: 0px;
+	padding-right: 20px;
+	padding-top: 0px;
+	width: 620px;
+	min-height: 600px;
+	text-align: justify;
+	background-color: white;
+	/* border-left: 1px dashed silver; */
+}
+
+#content h1 {
+
+	font-size: 22px;
+	color: #1D3D0F;
+	text-transform: capitalize;
+	/*border-bottom: 1px solid silver;*/
+	margin-bottom: 5px;
+	padding: 0px;
+	letter-spacing: 2px;
+}
+
+#content a, span[text] {
+	color: #1D3D0F;
+	text-decoration: none;
+	font-weight:none;
+	cursor: pointer;
+}
+
+span:hover::after {
+content:attr(text);
+position:absolute;
+padding:5px;
+width:300px;
+color:white;
+background-color:#1D3D0F;
+}
+
+input:focus + .box {width:100%; padding:2%; font-size:14px; height:100%;}
+input:focus + .box *{opacity:1;}
+
+.box
+{	
+	width:0%;
+	top:0px;
+	left:0px;
+	height:0%;
+	overflow:hidden;
+    position: fixed;
+    background: rgba(0,0,0,0.5);
+    text-align:center;
+    color:white;
+    font-size:0px;
+}
+.box img, .box p {padding:10px;}
+.box *:not(h3)
+		{
+			opacity:0;
+			-moz-transition:opacity 2s;
+			-o-transition:opacity 2s;
+			-webkit-transition:opacity 2s;
+			transition:opacity 2s;
+			background:white;
+			color: #4D4D4D;
+			margin-left:auto;
+			margin-right:auto;
+			max-width:80%;
+			max-height:80%;
+		}
+
+		
+#content img {padding: 5px; max-width:100%;}
+
+#footer, footer{
+	clear: both;
+	text-align: center;
+	font-size: 12px;
+	color: #4D4D4D;
+	padding-top: 15px;
+	letter-spacing: 2px;
+}
+
+#footer a {
+	color: black;
+	text-decoration: none;
+	letter-spacing: -1px;
+}
+
+
+@media print {
+header, nav, img, form, iframe
+{
+display:none;
+}
+
+div#content{width:100%;}
+div#content a, div#content h1 {color:black;}
+}
+

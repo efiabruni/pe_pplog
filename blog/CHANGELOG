@@ -1,0 +1,164 @@
+pe_pplog v2.1b December 3rd, 2013
+Bugfixes
+"posts" was printed instead of the entry number when editing a new entry
+Emails stred locally were bening overwritten
+Lightboxes not working in Chrome and IE
+Changed the way entries were sorted out from posts as the old way could lead to no entries per page for the index
+Spelling mistakes
+
+Tweaks
+Some css improvements
+Simplifing path specifications 
+
+New
+Possible to delete emails when they are saved locally
+Comment preview
+
+pe_pplog v2.1a October 30th, 2013
+Bugfixes
+When deletinga post, the comments belonging to the posts now get deleted as well
+Minor spelling and punctuation fixes
+
+Tweaks
+Fixing path issues, to make it possible for the blog to be in a subdirectory
+Config option for search engine robots behavious
+Taken out target=_blank for links
+Smilies are now seperate buttons next to textfield
+Bbcode help update
+added .htacces file for live server environment
+
+New
+took out prettyPhoto
+css lightboxes for pictures or text
+option to set program for sending mail or having mails stored as private messages
+show private messages plugin
+make a new Gallery script (for css lightboxes)
+script to make notes (to publish later)
+
+pe_pplog v2b July 23rd, 2013
+Bugfixes
+#changes to the login, stats and ban to work with a reverse proxy (using X_HEADER_FORWARD and HTTP_X_FORWARDED_PROTO)
+#add a viewport for mobile to make it display in a readable size
+#changed "elsif (r('do') eq $config_pluginsBlog[$_] && r('do') ne '')" to "elsif (grep {$_ eq r('do') } @config_pluginsBlog)"
+as it was not working with some versions of perl
+#Stats in the admin section do only show if enabled
+
+Some tweaks
+#prettyPhoto disabled for small devices
+#automatic redirect to https when $config_HTTPSlogin = 1
+#css style mainly determined by main css file (colors, font, backgrounds)
+#error messages for login in case cookies can't be set
+#If Javascript is disabled pictures in galleries pop up on hover (only if no seperate thumbnails are used) 
+
+From sc0ttman (thanks :)!)
+#able to change and modify style sheet in editConfig
+
+pe_pplog v2a June 21st, 2013
+#Added plugin section to the main blog and admin page
+#Plugins: contact page, edit the Config file from within the blog, create a gallery
+
+#Added a mobile and print style
+#css updated degrade nicer if the browser does not support html
+#javascript tooltips exchanged for css solution
+
+#More secure login: possible to choose only to login with https and IP address check
+#Stats for the main blog shown in the menu of the admin page
+#Back up file in case pe_Config is corrupted and warning message on the admin page
+#possible to add scripts to the admin page ($config_customHTMLadmin)
+
+#added newest version of prettyPhoto and JQuery 1.9.1
+
+pe_pplog v1.1b June 13th, 2013
+Bugfixes 
+25.05.13 Archive bugfix from Jamesbond 
+13.06.13 Login fix to make it work with Hiawatha
+
+pe_pplog v1. May 10th, 2013
+
+Summary
+#Added JQuery prettyPhoto
+
+#devided the blog in a main blog, admin page, subroutine and config options script
+#login for admin page, no need to enter passwords for individual actions as admin
+#moved to sub: archive, search, listComments, Bbcode help page, BBcode Buttons html, Javascript and JQuery code
+#new front page and show pages page for admin page
+#possible to check "is HTML" for a post when creating or editing entry
+
+#rewrote show archive to get the months in correct order, added JQuery effect and pages
+#former dead end pages (eg: "entry has been added") now returns to "view detailed" or index
+#made it possile to use more than 1 category for a post
+
+#changed the BBcode somewhat to allow for use of all the prettyPhoto options added buttons and a help page
+#took out WYSIWYG editor (was not working)
+
+#took out a lot of $config_options added custom html options and cleaned it up a bit
+#updated to html5, use of some JQuery effects, corrected spelling mistakes and prettyfied blog and css
+
+Big changes
+#devided the blog in a main blog, admin page, subroutine and config options script
+#Login for admin page
+#moved to sub: archive, search, listComments, Bbcode help page, BBcode Buttons html, Javascript and JQuery code
+#new entry, edit entry, send comment and delete comment returns to view detailed, delete entry returns to index
+#Added JQuery prettyPhoto
+#rewrote show archive to get the months in correct order, added JQuery effect and pages
+
+Changes in different categories:
+#Create and edit entry pages: 
+#moved to admin.pl; no passwords (instead login to admin page), took out passord fields
+#delete entry and delete comments page have a "go back" option
+#"post as html" now a checkbox and trying to make is somewhat harder to break the blog when posting hmtl (a " used to be deadly...)
+
+Categories:
+#redesigned showCategories for public and admin, added optional JQuery slide effect 
+#made it possible to assign more than one category to a post, use category1'category2, no spaces!
+#pages are listed in viewCat
+
+Comments
+#Added name of post in "list comments"
+#added sc0ttmans anchor
+#Comments in admin:  no security codes or questions or password, uses automatically the first Name $Config_commentsForbiddenAuthors 
+
+added in Admin
+#Home for admin: consits of show lates comments and add new entry
+#a list Pages page
+
+Bbcode changes:
+#changed the BBcode somewhat to allow for use of all the prettyPhoto options and some more text styling options
+#changed the way smilies are inserted, now one can change, add smilies simply by changing or adding the png files in the smilies folder
+
+#made a BBCode help page instead of old show smilies
+#changed Bbcode buttons
+#Took out WYSIWYG editor
+
+#taken out $config options are:
+$allow Bbcode buttons 
+$config_useWYSIWYG 
+$config_allowHMTLOnEntries (is now a checkbox)
+$config_textAreaCols  and Rows (set to 15 and 50)
+$config_searchMinLength hardcoded to 4	
+$config:commentsDescending and set newest first as default
+$config_onlyNumbersOnCAPTCHA and  $config_CAPTCHALenght (set 8 numbers and letters as default )
+$config_showGmtOnFooter 
+$config_allowReddit (replace by custom html)
+$config_allowCustomHTML 
+$config_menuLinksHeader
+
+#added $config options are: 
+$config_blogHeader 
+$config_blogFooter
+$config_tmpFolder
+$config_customHTMLtop (in menu)
+$config_customHTMLpost
+$config_customHTMLhead (for scripts)
+
+#HTML5 changes: 
+<div id=header> to <header>
+ <div=menu> to <nav>
+<div id=code> to <code>
+used <footer> instead of <center> on all well, footers
+
+prettyfied:
+#all is somewhat redesigned making it (to me) prettier or easier to use
+#JQuery used in Menu, showPages, showCategories, archive
+#update css style sheet
+#Background pictures
