@@ -14,15 +14,15 @@ Move this folder (pe_pplog) to the root of your web server.
 Rename HTACESS => .htacces
 
 Test:(Start your webserver) and point your browser to http://localhost/pe_pplog, you should see the blog main page with the welcome message
-The admin page should be at http://localhost/pe_pplog/pe_admin.pl
+ The admin page should be at http://localhost/pe_pplog/pe_admin.pl
 
 Open the pe_Config.pl file in a text editor.
-set your password
+ set your password
 
 Making the posts and comments folders writeable for the webserver
-What is the username and usergroup for your webserver (traditionally it is "nobody")
-open a terminal  
-type in "chown -R username:usergroup /the path to /blog" and enter
+ What is the username and usergroup for your webserver (traditionally it is "nobody")
+ open a terminal  
+ type in "chown -R username:usergroup /the path to /blog" and enter
 
 
 Test again:(Start your webserver) and point your browser to http://localhost/pe_pplog
