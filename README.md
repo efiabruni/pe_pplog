@@ -1,33 +1,33 @@
-Licenses:
-The original PPLOG version 1.1b was coded by Federico Ramírez (fedekun)
+#Licenses:
+The original PPLOG version 1.1b was coded by Federico Ramï¿½rez (fedekun)
 and is licensed under the GNU Public License v3 (see LICENSE in the /blog folder).
 
 Thanks to Scott Jarvis (sc0ttman), Chris (Catdude), Grant (Smokey01) and Jamesbond for suggestions and pointing out bugs. See comments in the script.
 
 The smilies used in this blog are by lmproulx (http://www.picto-rama.blogspot.com/) and have been released into the public domain.
 
-Changelog:
+#Changelog:
 The full changelog for the pe_pplog can be found in CHANGELOG in the /blog folder.
 
-Installation:
+#Installation:
 Move this folder (pe_pplog) to the root of your web server.
 Rename HTACESS => .htacces
 
--Test:(Start your webserver) and point your browser to http://localhost/pe_pplog, you should see the blog main page with the welcome message
+Test:(Start your webserver) and point your browser to http://localhost/pe_pplog, you should see the blog main page with the welcome message
 	  The admin page should be at http://localhost/pe_pplog/pe_admin.pl
 
 Open the pe_Config.pl file in a text editor.
 
 In pe_Config.pl 
-#set your password
+set your password
 
 Making the posts and comments folders writeable for the webserver
-# What is the username and usergroup for your webserver (traditionally it is "nobody")
-# open a terminal
+ What is the username and usergroup for your webserver (traditionally it is "nobody")
+ open a terminal
 type in "chown -R username:usergroup /the path to /blog" and enter
-type in "chmod 750 /the path to /blog" and enter
 
--Test again:(Start your webserver) and point your browser to http://localhost/pe_pplog
+
+Test again:(Start your webserver) and point your browser to http://localhost/pe_pplog
 you should see the blog main page with the welcome message. Write your first post :)
 
 Change other options in pe_Config.pl according to your liking
@@ -35,7 +35,7 @@ If you want to change the name of the subdirectory (eg from pe_pplog to blog) ch
 Styling options can be changed in css (open with text editor)
 If you have old posts (from pup_pplog) you want to import into the new pplog you can find a script on the website: http://tine.pagekite.me/blog?viewDetailed=00035
 
-Trouble?
+#Trouble?
 Error message: Object not found... Did you put the files in the root of your webserver? 
 copy and paste the files to the root of the web server. 
 Did you type the correct path into the browser?
