@@ -466,7 +466,7 @@ elsif (r('Submit') eq $locale{$lang}->{preview})
 			<tr>
 			<td><input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle">
 			<input name="sendComment" value="'.$fileName.'" type="hidden" id="sendComment"></td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
+			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
 			</td>
 			</tr>
 			</table>
