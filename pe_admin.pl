@@ -440,8 +440,56 @@ elsif(r('delete') ne '')
 	</table>
 	</form>';
 }
+#preview Comments
+elsif (r('Submit') eq $locale{$lang}->{preview})
+{
+	#get all the posted detailes
+	my $title = r('title');
+	my $author = $config_commentsForbiddenAuthors[0]; 
+	my $content = r('content');
+	my $postTitle = r('postTitle');
+	my $fileNum = r('Comment');
+	my $date = getdate($config_gmt);
+	
+	#print comment as html
+	print '<b>'.$title.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />';
+	print bbcode($content); 
+	
+	#print comment form with former entries
+	print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
+			<form accept-charset="UTF-8" name="submitform" method="post">
+			<table>
+			<tr>
+			<td>'.$locale{$lang}->{title}.'</td>
+			<td><input name="title" type="text" id="title" value="'.$title.'"></td>
+			</tr>
+			<tr>
+			<td>'.$locale{$lang}->{author}.'</td>
+			<td><input name="author" type="text" id="author" value="'.$author.'"></td>
+			</tr>';
+		
+		#bbcode buttons if allowed
+		if ($config_bbCodeOnCommentaries == 1)
+		{
+			bbcodeComments();
+		}
+		else
+		{
+		print'<tr><td>&nbsp;</td>';
+		}
+	print '<td><textarea name="content" id="content" cols="50" rows="10">'.$content.'</textarea></td>
+			</tr><tr>
+			<td><input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle">
+			<input name="Comment" value="'.$fileNum.'" type="hidden" id="Comment"></td>
+			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
+			</td>
+			</tr>
+			</table>
+			</form>';
+}
+
 #Display Individual Entry and all processes which end with displaying an entry
-elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('process') eq 'sendComment' || r('process') eq 'deleteComment')
+elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $locale{$lang}->{addcomment} || r('process') eq 'deleteComment')
 {
 	
 	my $fileName = r('viewDetailed');
@@ -485,7 +533,7 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('process') eq '
 		close FILE;
 	}
 	
-	if(r('process') eq 'sendComment')
+	if(r('Submit') eq $locale{$lang}->{addcomment})
 	{
 	# Send Comment Process
 	# Shorter for admin, no identity checking, security code or other
@@ -711,7 +759,7 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('process') eq '
 			<input name="process" type="hidden" id="process" value="sendComment">
 			<input name="Comment" value="'.$fileNum.'" type="hidden" id="Comment">
 			<input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle"></td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'"></td>
+			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'"></td>
 			</tr>
 			</table>
 			</form>';
