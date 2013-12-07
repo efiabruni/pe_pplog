@@ -553,7 +553,17 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $l
 	}
 	else
 	{
-			if(length($content) > $config_commentsMaxLenght)#if comment is too long
+		#check if the comment already exists
+		my $check=$title.'"'.$author.'"'.$content;
+		my $old;
+		open (FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
+		while (<FILE>){$old=$_;}
+		close FILE;
+		if ($old=~ /$check/){
+			print '<br />'.$locale{$lang}->{comtwice};
+			}
+	
+		elsif (length($content) > $config_commentsMaxLenght)#if comment is too long
 			{
 				print '<br />'.$locale{$lang}->{toolong1}.$config_commentsMaxLenght.$locale{$lang}->{toolong2}.length($content);
 			}
