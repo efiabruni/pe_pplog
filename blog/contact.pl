@@ -26,10 +26,10 @@ if (r('process')eq 'contact'){
 		}
 	}
 	#check security question if indicated
-	if($config_securityQuestionOnComments == 1)
+	if($config_securityQuestionOnContact == 1)
 	{
 		my $question = r('question');
-		unless(lc($question) eq lc($config_commentsSecurityAnswer))
+		unless(lc($question) eq lc($config_contactSecurityAnswer))
 		{
 			print '<br />'.$locale{$lang}->{question};
 			$do = 0;
@@ -102,9 +102,9 @@ print '<h1>'.$locale{$lang}->{contactinfo}.'</h1>'.$config_contactAddress.'<br /
 
 
 			print '<tr>
-			<td>'.$config_commentsSecurityQuestion.'</td>
+			<td>'.$config_contactSecurityQuestion.'</td>
 			<td><input name="question" type="text" id="question"></td>
-			</tr>' if $config_securityQuestionOnComments == 1;			
+			</tr>' if $config_securityQuestionOnContact == 1;			
 print'<tr>
 <td><input name="process" type="hidden" id="process" value="contact"></td> 
 <td><input type="submit" name="Submit" value="'.$locale{$lang}->{send}.'"></td>
