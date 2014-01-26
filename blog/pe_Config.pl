@@ -47,7 +47,6 @@ our $config_securityQuestionOnComments = 0;										# Allow the option to displ
 our $config_commentsSecurityQuestion = 'Password for comments. <a href="?do=contact">Register</a>';	# You shall change it, choose a question you like
 our $config_commentsSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
 
-our $config_contactSecurityCode = 1;											# Allow security code for comments (good idea unless you like spam)
 our $config_contactSecurityQuestion = 'Name of the Puppy Linux mascot?';		# You shall change it, choose a question you like
 our $config_contactSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
 
