@@ -44,8 +44,12 @@ our @config_commentsForbiddenAuthors = qw/admin administrator/;					# These are 
 
 our $config_commentsSecurityCode = 1;											# Allow security code for comments (good idea unless you like spam)
 our $config_securityQuestionOnComments = 0;										# Allow the option to display a question 
-our $config_commentsSecurityQuestion = 'Name of the Puppy Linux mascot?';		# You shall change it, choose a question you like
+our $config_commentsSecurityQuestion = 'Password for comments. <a href="?do=contact">Register</a>';	# You shall change it, choose a question you like
 our $config_commentsSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
+
+our $config_contactSecurityCode = 1;											# Allow security code for comments (good idea unless you like spam)
+our $config_contactSecurityQuestion = 'Name of the Puppy Linux mascot?';		# You shall change it, choose a question you like
+our $config_contactSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
 
 our $config_bbCodeOnCommentaries = 1;											# Allow BBCODE buttons on comments entry page
 our $config_commentsMaxLenght = 2000;											# Comment maximum characters
@@ -65,8 +69,8 @@ our $config_randomString = 'zjhd092nmbd20dbJASDK1BFGAB1';						# This is for pas
 our @config_ipBan = qw/202.325.35.145 165.265.26.65/;							# 2 random IPS, sorry if it is yours... Just edit if that is the case
 
 #adding things
-our @config_pluginsBlog = qw(contact);											#available: contact Add here the plugin files you want to use
-our @config_pluginsAdmin = qw(editConfig newGallery notes emails upload);		#available: editConfig newGallery notes emails upload
+our @config_pluginsBlog = qw(contact register);											#available: contact Add here the plugin files you want to use
+our @config_pluginsAdmin = qw(editConfig newGallery notes emails upload block);		#available: editConfig newGallery notes emails upload
 our $config_contactAddress = ''; 												#for contact form plugin
 our @config_uploadFolders = qw(/images /css); #path to folder for files from webserver root
 our @config_allowedMime = qw(image/ text/css text/html text/plain); #MIME types allowed for upload
@@ -80,6 +84,8 @@ our $config_customHTMLadmin = '';												# for adding scripts to the admin p
 our %locale;
 
 $locale {"EN"} = {
+register =>"Register",
+block =>"Block User",
 preview => "Preview Comment",
 ppGallery => "New Gallery",
 emails => "Emails",
@@ -169,7 +175,7 @@ mail => "Hello, I'm sending this mail because of a new comment on your blog: htt
 subject => "New comment on the pe_pplog",
 author => "Author",
 code => "Security Code",
-password => "Password",
+password => "Personal password",
 spancom => "So no one else can use your username to comment",
 nocomment => "No comments",
 noentries => "No entries created yet.",
@@ -301,7 +307,7 @@ mail => "Guten Tag! Ein neuer Kommentar wurde auf Ihrem Blog: http://$ENV{'HTTP_
 subject => "Ein neuer Kommentar auf dem pe_pplog",
 author => "Benutzername",
 code => "Sicherheitscode",
-password => "Passwort",
+password => "Persönliches Passwort",
 spancom => "Damit niemand anders Ihrem Benutzernamen nutzen kann",
 nocomment => "Keine Kommentare",
 noentries => "Noch keine Einträge vorhanden.",
@@ -433,7 +439,7 @@ mail => "Hello, I'm sending this mail because of a new comment on your blog: htt
 subject => "New comment on the pe_pplog",
 author => "Συντάκτης",
 code => "Κείμενο ασφαλείας",
-password => "Κωδικός",
+password => "Personal password",
 spancom => "So no one else can use your username to comment",
 nocomment => "Κανένα σχόλιο",
 noentries => "Καμία καταχώρηση ακόμη.'",
@@ -565,7 +571,7 @@ mail => "Hola, Estoy enviando este correo porque hay un nuevo commentario en su 
 subject => "Nuevo comentario en el pe_pplog",
 author => "Usario",
 code => "Código de seguridad",
-password => "Contraseña",
+password => "Contraseña de usario",
 spancom => "Así que nadie puede usar su nombre de usuario para comentar",
 nocomment => "0 comentarios",
 noentries => "No hay entradas publicadas aún.",
@@ -698,7 +704,7 @@ mail => "Hello, I'm sending this mail because of a new comment on your blog: htt
 subject => "New comment on the pe_pplog",
 author => "Author",
 code => "Security Code",
-password => "Password",
+password => "Personal password",
 spancom => "So no one else can use your username to comment",
 nocomment => "No comments",
 noentries => "No entries created yet.",
