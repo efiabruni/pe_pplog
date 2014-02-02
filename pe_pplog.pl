@@ -570,15 +570,6 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 	if($hasPosted == 0)
 	{
 		print "Please <a href='?do=register'>register</a> before you comment";
-		my $newpass =crypt($pass, $config_randomString);
-		open (MAIL,"|$config_sendMailWithNewCommentMail[0]");
-		print MAIL "To: $config_sendMailWithNewCommentMail[1] \n";
-		print MAIL "From: PPLOG \n";
-		print MAIL "Subject: Asking for a new registration \n";
-		print MAIL "Username: $author \n Encrypted password: $newpass";
-		close(MAIL);
-		print "You are new posting here, your username and password will be added to the database and
-		you will get a confirmation email.";
 		$do = 0;
 	}
 	# End of author checking, start adding comment
