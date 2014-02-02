@@ -569,9 +569,7 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 	
 	if($hasPosted == 0)
 	{
-<<<<<<< HEAD
 		print "Please <a href='?do=register'>register</a> before you comment";
-=======
 		my $newpass =crypt($pass, $config_randomString);
 		open (MAIL,"|$config_sendMailWithNewCommentMail[0]");
 		print MAIL "To: $config_sendMailWithNewCommentMail[1] \n";
@@ -581,7 +579,6 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 		close(MAIL);
 		print "You are new posting here, your username and password will be added to the database and
 		you will get a confirmation email.";
->>>>>>> 628977ba5fab88b58737b90f670deba5272d0417
 		$do = 0;
 	}
 	# End of author checking, start adding comment
