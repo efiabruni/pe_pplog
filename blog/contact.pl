@@ -110,8 +110,8 @@ print '<h1>'.$locale{$lang}->{contactinfo}.'</h1>'.$config_contactAddress.'<br /
 <td>Username</td>
 <td><input name=name type=text id=name></td>
 </tr><tr>
-<td>Password <href="?do=register">Register</a></td>
-<td><input name="pass" type="password" id="pass"></td>
+<td>Password </td>
+<td><input name="pass" type="password" id="pass"><a href="?do=register">Register</a></td>
 </tr><tr>
 <td>'.$locale{$lang}->{email}.'</td>
 <td><input name=email type=text id=email></td>
