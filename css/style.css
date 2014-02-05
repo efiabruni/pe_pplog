@@ -1,7 +1,7 @@
 /****************************************
 *	This is the style sheet of PPLOG	*
 *	Edit this as you wish.				*
-*	Designed by Federico Ramírez		*
+*	Designed by Federico Ramï¿½rez		*
 *	A.K.A fedekun and Efia	    	    *
 ****************************************/
 
@@ -86,6 +86,7 @@ textarea, pre {
 	color: #4D4D4D;
 	font-family: serif;
 	font-size: 14px;
+        line-height: 10px;
 	overflow: scroll;
 	}
 	
