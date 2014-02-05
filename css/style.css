@@ -75,8 +75,7 @@ table {
 	font-size: 14px;
 }
 
-textarea, code{
-	display:block;
+textarea, pre{
 	padding: 2px;
 	margin: 2px;
 	background-color: #E5E5E5;

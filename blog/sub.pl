@@ -26,7 +26,7 @@ s/\{i\}(.+?)\{\/i\}/<i>$1<\/i>/gi;
 s/\{u\}(.+?)\{\/u\}/<u>$1<\/u>/gi;
 s/\{\*\}(.+?)\{\/\*\}/<li>$1<\/li>/gi;
 s/\{style=(.+?)\}(.+?)\{\/style\}/<p style=$1>$2<\/p>/gi; 
-s/\{qcode\}(.+?)\{\/qcode\}/<code>$1<\/code>/gi;  
+s/\{qcode\}(.+?)\{\/qcode\}/<pre><code>$1<\/code><\/pre></gi;  
 s/\{img\}(.+?)\{\/img\}/<img src=$1 \/>/gi;
 s/\{url\}(.+?)\{\/url\}/<a href=$1>$1<\/a>/gi; 
 s/\{url=(.+?)\}(.+?)\{\/url\}/<a href=$1>$2<\/a>/gi;
@@ -40,7 +40,7 @@ sub bbdecode
 {
 	$_ = $_[0];
 s/\n//;
-s/\<code\>(.+?)\<\/code\>/\{qcode\}$1\{\/qcode\}/gi; 
+s/\<pre><code\>(.+?)\<\/code\><\pre>/\{qcode\}$1\{\/qcode\}/gi; 
 s/<br \/>//gi;
 s/\<b\>(.+?)\<\/b\>/\{b\}$1\{\/b\}/gi;
 s/\<i\>(.+?)\<\/i\>/\{i\}$1\{\/i\}/gi;
