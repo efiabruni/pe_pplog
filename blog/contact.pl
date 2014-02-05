@@ -5,7 +5,9 @@ if (r('process')eq 'contact'){
 	my $title = r('title');
 	my $author = r('name');
 	my $email = r('email');
+	my $pass = r('pass');
 	my $message = r('content');
+	my $hasPosted = 0;
 	my $do = 1;
 	
 	if($title eq '' || $author eq '' || $message eq ''|| $email eq '')
@@ -13,6 +15,37 @@ if (r('process')eq 'contact'){
 		print '<br />'.$locale{$lang}->{necessary};
 		$do = 0;
 	}
+	
+	#see if user is registered
+	open(FILE, "<$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
+	my $data = '';
+	while(<FILE>)
+	{
+		$data.=$_;
+	}
+	close(FILE);
+	
+	my @users = split(/"/, $data);
+	foreach(@users)
+		{
+			my @data = split(/'/, $_);
+			if($author eq $data[0])
+			{
+				$hasPosted = 1;
+				if(crypt($pass, $config_randomString) ne $data[1])
+				{
+					$do = 0;
+					print '<br />'.$locale{$lang}->{compass};
+				}
+				last;
+			}
+		}
+	if($hasPosted == 0)
+	{
+		print "Please <a href='?do=register'>register</a> before you comment";
+		$do = 0;
+	}
+	
 	 #check captcha if indicated
 	if($config_commentsSecurityCode == 1)
 	{
@@ -75,8 +108,11 @@ print '<h1>'.$locale{$lang}->{contactinfo}.'</h1>'.$config_contactAddress.'<br /
 <td>'.$locale{$lang}->{csubject}.'</td>
 <td><input name=title type=text id=title></td>
 </tr><tr>
-<td>'.$locale{$lang}->{name}.'</td>
+<td>Username</td>
 <td><input name=name type=text id=name></td>
+</tr><tr>
+<td>Password </td>
+<td><input name="pass" type="password" id="pass"><a href="?do=register">Register</a></td>
 </tr><tr>
 <td>'.$locale{$lang}->{email}.'</td>
 <td><input name=email type=text id=email></td>
