@@ -74,7 +74,7 @@ table {
 	font-family: "Liberation Sans", "Century Gothic",  "Lucida Sans Unicode", "Droid Sans" ,sans-serif;
 	font-size: 14px;
 }
-
+pre {line-height: 10px;}
 textarea, pre{
 	padding: 2px;
 	margin: 2px;
