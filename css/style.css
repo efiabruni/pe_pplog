@@ -75,6 +75,7 @@ table {
 	font-size: 14px;
 }
 
+pre {line-height: 10px;}
 textarea, pre {
 
 	padding: 2px;
@@ -86,7 +87,6 @@ textarea, pre {
 	color: #4D4D4D;
 	font-family: serif;
 	font-size: 14px;
-        line-height: 10px;
 	overflow: scroll;
 	}
 	
