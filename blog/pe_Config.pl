@@ -83,7 +83,7 @@ our $config_customHTMLadmin = '';												# for adding scripts to the admin p
 our %locale;
 
 $locale {"EN"} = {
-register =>"Register",
+register =>"Register / Change Password",
 block =>"Block User",
 preview => "Preview Comment",
 ppGallery => "New Gallery",
