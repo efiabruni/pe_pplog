@@ -30,12 +30,12 @@ if (r('process') eq 'block'){
 	print "$email has been blocked";
 }
 
-print '<h1>Block users</h1><form accept-charset="UTF-8" name="form1" method="post"><table>';
+print '<h1>Block users</h1><table>';
 foreach (@users){
 	@user = split(/'/,$_);
-	print "<tr><td>$user[0]</td><td>$user[2]<input name='email' type='hidden' value='$user[2]'></td>
+	print "<tr><form accept-charset='UTF-8' method='post'><td>$user[0]</td><td>$user[2]<input name='email' type='hidden' value='$user[2]'></td>
 			<td><input name='process' type='hidden' id='process' value='block'>
-			<input type='submit' name='Submit' value='Block user'></td></tr>";
+			<input type='submit' name='Submit' value='Block user'></td></form></tr>";
 		}
-print '</table></form>';
+print '</table>';
 
