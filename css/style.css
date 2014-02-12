@@ -1,7 +1,7 @@
 /****************************************
 *	This is the style sheet of PPLOG	*
 *	Edit this as you wish.				*
-*	Designed by Federico Ramírez		*
+*	Designed by Federico Ramï¿½rez		*
 *	A.K.A fedekun and Efia	    	    *
 ****************************************/
 
@@ -75,6 +75,7 @@ table {
 	font-size: 14px;
 }
 
+pre {line-height: 10px;}
 textarea, pre {
 
 	padding: 2px;
