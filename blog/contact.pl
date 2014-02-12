@@ -16,10 +16,7 @@ if (r('process')eq 'contact'){
 		print '<br />'.$locale{$lang}->{necessary};
 		$do = 0;
 	}
-<<<<<<< HEAD
 	
-=======
->>>>>>> bb3cdcb8c44897563a6b8ac53b8cab67fba48f62
 	#see if user is registered
 	open(FILE, "<$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
 	my $data = '';
@@ -49,11 +46,7 @@ if (r('process')eq 'contact'){
 		print "Please <a href='?do=register'>register</a> before you comment";
 		$do = 0;
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> bb3cdcb8c44897563a6b8ac53b8cab67fba48f62
 	 #check captcha if indicated
 	if($config_commentsSecurityCode == 1)
 	{
