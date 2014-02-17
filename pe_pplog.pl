@@ -579,7 +579,7 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 	#check if the comment already exists
 	open (FILE, "<$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
 	while (<FILE>){
-		my $check=$title.'"'.$author.'"'.$content;
+		my $check=$title.'"'.$author.'"'.$content.'"';
 		if ($_=~ /$check/){
 			print '<br />'.$locale{$lang}->{comtwice};
 			$do=0;
