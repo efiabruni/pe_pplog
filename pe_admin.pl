@@ -554,7 +554,7 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $l
 	else
 	{
 		#check if the comment already exists
-		my $check=$title.'"'.$author.'"'.$content;
+		my $check=$title.'"'.$author.'"'.$content.'"';
 		my $old;
 		open (FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
 		while (<FILE>){$old=$_;}
