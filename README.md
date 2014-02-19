@@ -1,3 +1,5 @@
+This branch is experimental. It exists because Barry asked me to implement a registration process for people who want to comment. It will not be maintained nor merged with the main blog. 
+
 #Licenses:
 The original PPLOG version 1.1b was coded by Federico Ramirez (fedekun)
 and is licensed under the GNU Public License v3 (see LICENSE in the /blog folder).
