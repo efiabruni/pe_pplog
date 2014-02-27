@@ -18,6 +18,14 @@ sub basic_r
 sub bbcode
 {
 	$_ = $_[0];
+
+#fix spaces in gallery bbcode	
+s/\{gal\}\s?(.+?)\s?\{\/gal\}/\{gal\}$1\{\/gal\} /gi;
+
+#get the path
+my @array = split (/\s/, $_);
+my @dirs = grep { /{gal}/&&/{\/gal}/; } @array;
+
 s/'/&apos;/gi; # Jamesbond, solution to the ' giving problems in comments
 s/¬/&#172;/gi;
 s/\n/<br \/>/gi;
@@ -32,7 +40,30 @@ s/\{url\}(.+?)\{\/url\}/<a href=$1>$1<\/a>/gi;
 s/\{url=(.+?)\}(.+?)\{\/url\}/<a href=$1>$2<\/a>/gi;
 s/\{box=(.+?) title=(.+?)\}(.+?)\{\/box\}/<input type=image class=thumb alt=$2 src=$1 title=$2 \/><div class=box><h3>$2<\/h3>$3<\/div>/gi; #bbcode for css lightboxes
 s/\{(.+?)\/\}/<img src=$config_smiliesFolder\/$1.png \/>/gi; 	
+
+#get pictures from folder and print lightboxes
+foreach my $dir(@dirs){
+	my $pictures;
+	$dir =~ s/{gal}\W?(.+?)\W?{\/gal}/$1/;
+	opendir (PIC,"$config_serverRoot/$dir");
+	my @pics = grep {/(jpg|jpeg|png|gif)$/i;} readdir(PIC);
 	
+	foreach my $pic(@pics)
+	{
+			my $name=$pic;
+			$name =~s/(.+?).(jpg|jpeg|png|gif)/$1/gi;
+			
+			if (-e "$config_serverRoot/$dir/thumbs"){
+				$pictures .= "<input type=image class=thumb alt=$name src=$dir/thumbs/$pic title=$name /><div class=box><h3>$name</h3><img src=$dir/$pic /></div>";
+			}
+			else {
+				$pictures .= "<input type=image class=thumb alt=$name src=$dir/$pic title=$name /><div class=box><h3>$name</h3><img src=$dir/$pic /></div>";
+			}
+		
+	}
+	s/\{gal}\W?$dir\W?\{\/gal}/$pictures/;
+}  
+
 	return $_;
 }
 #HTML to Bbcode
