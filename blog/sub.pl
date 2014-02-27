@@ -100,8 +100,8 @@ sub bbcodeButtons #Buttons for entry and edit
 			<input type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.content); return false;" value="&#34/.&#34" />
 			<input type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.content); return false;" value="http://" />
             <input type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.content); return false;" value="img" />
-			<input type="button" onClick="surroundText(\'{box= title=}\',\'{/box}\', document.forms.submitform.content); return false;" value="Box" />
-            <input type="button" onClick="surroundText(\'\',\'{url=/link/or/path rel=prettyPhoto title=.}{img}/path/to/thumbnail alt=. title=.{/img}{/url}\', document.forms.submitform.content); return false;" value="Pbox" />
+			<input type="button" onClick="surroundText(\'{box= title=}\', \'{/box}\', document.forms.submitform.content); return false;" value="Box" />
+            <input type="button" onClick="surroundText(\'{gal}\', \'{/gal}\', document.forms.submitform.content); return false;" value="Pbox" />
 			</tr><td>';
 		while ($_ = readdir (SM)){
 		foreach ($_){
