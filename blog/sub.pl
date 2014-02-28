@@ -93,15 +93,15 @@ sub bbcodeButtons #Buttons for entry and edit
 			<input type="button" style="font-weight:bold" onClick="surroundText(\'{b}\', \'{/b}\', document.forms.submitform.content); return false;" value="b" />
 			<input type="button" style="font-style:italic" onClick="surroundText(\'{i}\', \'{/i}\', document.forms.submitform.content); return false;" value="i" />
 			<input type="button" style="text-decoration:underline" onClick="surroundText(\'{u}\', \'{/u}\', document.forms.submitform.content); return false;" value="u" />
-			<input type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.content); return false;" value="style" />
-			<input type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.content); return false;" value=" &#8226 li" />
+			<input type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.content); return false;" value="style" title="'.$locale{$lang}->{style}.'" />
+			<input type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.content); return false;" value=" &#8226 li" title="'.$locale{$lang}->{list}.'" />
 			</td></tr>
 			<tr class="screen"><td>&nbsp;</td><td>
-			<input type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.content); return false;" value="&#34/.&#34" />
-			<input type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.content); return false;" value="http://" />
-            <input type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.content); return false;" value="img" />
-			<input type="button" onClick="surroundText(\'{box= title=}\', \'{/box}\', document.forms.submitform.content); return false;" value="Box" />
-            <input type="button" onClick="surroundText(\'{gal}\', \'{/gal}\', document.forms.submitform.content); return false;" value="Pbox" />
+			<input type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.content); return false;" value="&#34/.&#34" title="'.$locale{$lang}->{quote}.'" />
+			<input type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.content); return false;" value="http://" title="'.$locale{$lang}->{http}.'" />
+            <input type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.content); return false;" value="img" title="'.$locale{$lang}->{img}.'" />
+			<input type="button" onClick="surroundText(\'{box= title=}\',\'{/box}\', document.forms.submitform.content); return false;" value="Box" title="'.$locale{$lang}->{box}.'" />
+            <input type="button" onClick="surroundText(\'{gal}\',\'{/gal}\', document.forms.submitform.content); return false;" value="'.$locale{$lang}->{newGallery}.'"  title="'.$locale{$lang}->{makegallery}.'" />
 			</tr><td>';
 		while ($_ = readdir (SM)){
 		foreach ($_){
@@ -111,6 +111,7 @@ sub bbcodeButtons #Buttons for entry and edit
 			}
 		}	
 		closedir SM;
+			#<input  type="button" onClick="surroundText(\'{\', \'/}\', document.forms.submitform.content); return false;" value=":-)"/>
 			print '<br /><input type=image alt="'.$locale{$lang}->{bbcode}.'"><div class=box /><iframe src=?BbcodeHelp=help#content target="_blank" width=650px height=90%></iframe></div></td>';
 
 }
@@ -123,14 +124,14 @@ sub bbcodeComments #Bttons for comments
 			<input  type="button" style="font-weight:bold" onClick="surroundText(\'{b}\', \'{/b}\', document.forms.submitform.content); return false;" value="b" />
 			<input  type="button" style="font-style:italic" onClick="surroundText(\'{i}\', \'{/i}\', document.forms.submitform.content); return false;" value="i" />
 			<input  type="button" style="text-decoration:underline" onClick="surroundText(\'{u}\', \'{/u}\', document.forms.submitform.content); return false;" value="u" />
-			<input  type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.content); return false;" value="style" />
+			<input type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.content); return false;" value="style" title="'.$locale{$lang}->{style}.'" />
 			</td></tr>
 			<tr class="screen"><td>&nbsp;</td><td>
-			<input  type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.content); return false;" value=" &#8226 li" />
-			<input  type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.content); return false;" value="&#34/.&#34" />
-			<input  type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.content); return false;" value="http://" />
-            <input  type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.content); return false;" value="img" />
-            </tr><td>';
+			<input type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.content); return false;" value=" &#8226 li" title="'.$locale{$lang}->{list}.'" />
+			<input type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.content); return false;" value="&#34/.&#34" title="'.$locale{$lang}->{quote}.'" />
+			<input type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.content); return false;" value="http://" title="'.$locale{$lang}->{http}.'" />
+            <input type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.content); return false;" value="img" title="'.$locale{$lang}->{img}.'" />
+			 </tr><td>';
         while ($_ = readdir (SM)){
 		foreach ($_){
 			my $name = $_;
@@ -139,7 +140,6 @@ sub bbcodeComments #Bttons for comments
 			}
 		}	
 		closedir SM;
-			print '<br /><input type=image alt="'.$locale{$lang}->{bbcode}.'"><div class=box /><iframe src=?BbcodeHelp=help#content target="_blank" width=650px height=90%></iframe></div></td>';
 }
 
 sub getdate#time according to given timezone
@@ -432,12 +432,13 @@ Media:<br />
 {url=http://website.com (options)}link{/url} <a href=#>link</a><br />
 {box=thumbnail title=title}image{/box} a lightbox, use the bbcode tags to insert images or textboxes with the style button. Any bbcode can be used in the box.
 If there is no thumbnail the title will be clickable.<br /><br />
-The "Pbox" button is for people who use prettyPhoto or other JQuery lightboxes
+The "Gallery" button creates a gallery out of pictures in a folder. Insert path from the root of the web-server. Thumbnails should be in a folder called "thumbs" in the picture
+folder if it does not exist the script will resize the original pictures (might affect page loading time)
 <br />
 <br />
 More Options: </br>
 (Options) are added where indicated;<br /> for example: {img}something.jpg title=a caption{/img}</br>
-I already added some options in the "Pbox" button for the lazy, just leave it empty if you don't want it</br>
+I already added some options in the "style" button for the lazy, just leave it empty if you don't want it</br>
 </br>
 some examples for options are:</br>
 alt= title</br>
