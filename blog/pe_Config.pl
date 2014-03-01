@@ -66,10 +66,10 @@ our @config_ipBan = qw/202.325.35.145 165.265.26.65/;							# 2 random IPS, sorr
 
 #adding things
 our @config_pluginsBlog = qw(contact);											#available: contact Add here the plugin files you want to use
-our @config_pluginsAdmin = qw(editConfig newGallery notes emails upload);		#available: editConfig newGallery notes emails upload
+our @config_pluginsAdmin = qw(editConfig notes emails upload);					#available: editConfig notes emails upload
 our $config_contactAddress = ''; 												#for contact form plugin
-our @config_uploadFolders = qw(/images /css); #path to folder for files from webserver root
-our @config_allowedMime = qw(image/ text/css text/html text/plain); #MIME types allowed for upload
+our @config_uploadFolders = qw(/images /css); 									#path to folder for files from webserver root
+our @config_allowedMime = qw(image/ text/css text/html text/plain);			    #MIME types allowed for upload
 
 our $config_customMenuHTMLtop = ''; 											# eg a reddit button: <a target="_blank" href="http://reddit.com/submit?url=http://'.$ENV{'HTTP_HOST'}.$ENV{'REQUEST_URI'}.'">Reddit This <img border="0" src="reddit.gif" /></a>';								
 our $config_customMenuHTMLbottom = '';											# HTML here, will appear in the bottom of the menu of the main blog

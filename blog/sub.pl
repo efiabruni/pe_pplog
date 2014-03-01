@@ -116,7 +116,7 @@ sub bbcodeButtons #Buttons for entry and edit
 
 }
 
-sub bbcodeComments #Bttons for comments
+sub bbcodeComments #Buttons for comments
 {
 	opendir (SM, $config_serverRoot.$config_smiliesFolder);
 		print
