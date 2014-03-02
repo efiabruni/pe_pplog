@@ -135,83 +135,24 @@ if(scalar(@pages) > 0)
 	print'</ul></li></ul>';
 }
 # 100613 added sc0ttmans UTF-8 fix		
-print '<ul class="menu"><li><a href=?do=archive>'.$locale{$lang}->{archive}.'</a></li></ul>
-<form id="mobile" accept-charset="UTF-8" name="form1" method="post" style=" text-align:center; margin-left:1%; width:98%">
-<input type="text" name="keyword">
-<input type="hidden" name="do" value="search">
-<input type="submit" name="Submit" value="'.$locale{$lang}->{search}.'"><br />
-'.$locale{$lang}->{bytitle}.' <input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.' <input name="by" type="radio" value="1">
-</form>
-<ul class="menu"><li><a href="?do=RSS">'.$locale{$lang}->{rss}.'</a></li></ul></div></header>
+print '<ul class="menu"><li><a href=?do=archive>'.$locale{$lang}->{archive}.'</a></li></ul>';
+menuMobileSearch();
+print '<ul class="menu"><li><a href="?do=RSS">'.$locale{$lang}->{rss}.'</a></li></ul></div></header>
 <nav>'
 #THIS IS THE SIDEBAR MENU 
 #Custom html in menu top
-.$config_customMenuHTMLtop. 
-#search 
-'<h1>'.$locale{$lang}->{search}.'</h1>
-<form accept-charset="UTF-8" name="form1" method="post">
-<input type="text" name="keyword" style="width:150px">', 
-'<input type="hidden" name="do" value="search"><br />
-'.$locale{$lang}->{bytitle}.' <input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.' <input name="by" type="radio" value="1">
-</form>
-<h1>'.$locale{$lang}->{categories}.'</h1>';			# Show Categories on Menu	
-my @categories = sort(getCategories());
-foreach(@categories)
-{
-	print '<a href="?viewCat='.$_.'">'.$_.'</a>';
-}
+.$config_customMenuHTMLtop;
 
-print '<h1>'.$locale{$lang}->{entries}.'</h1>';	# Show Entries in Menu
-
-my @tmpEntries = getFiles($config_postsDatabaseFolder);
-my @entriesOnMenu=();
-my @pages = getPages();
-my $i = 0;
-
-foreach my $item(@tmpEntries)
-	{
-		my @split = split(/¬/, $item);
-		unless (grep {$_ eq $split[4] } @pages){push(@entriesOnMenu, $item);}
-	}
-
-foreach(@entriesOnMenu)
-{
-	if($i <= $config_menuEntriesLimit)
-	{
-		my @entry = split(/¬/, $_);
-		print '<a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a>';
-		$i++;
-	}
-}
+menuSearch();#search
+menuCategories();# Show Categories on Menu
+menuEntries();	# Show Entries in Menu
 
 if($config_showLatestComments == 1)
 {
-	# Latest comments on the menu
-		
-	my @comments = getComments();
-	
-	if(scalar(@comments) > 0)
-	{
-		print '<h1>'.$locale{$lang}->{comments}.'</h1>
-		<a href="?do=listComments">'.$locale{$lang}->{listComments}.' »</a>';
-	}
-	
-	my $i = 0;
-	
-	foreach(@comments)
-	{
-		if($i <= $config_showLatestCommentsLimit)
-		{
-			my @entry = split(/"/, $_);
-			print '<a href="?viewDetailed='.$entry[4].'#'.$entry[5].'" title="'.$locale{$lang}->{entryby}.' '.$entry[1].'">'.$entry[0].'</a>'; #sc0ttman
-			$i++;
-		}
-	}
+	menuComments(); # Latest comments on the menu
 }
 
-	# Display Custom HTML in the bottom of menu
-	
-print $config_customMenuHTMLbottom;
+print $config_customMenuHTMLbottom; # Display Custom HTML in the bottom of menu
 
 # Show Some Links Defined on the Configuration
 if(@config_menuLinks > 0)
@@ -317,6 +258,9 @@ if(r('viewCat') ne '')
 	my $cat = r('viewCat');
 	my @entries = getFiles($config_postsDatabaseFolder);
 	my @thisCategoryEntries = ();
+	my $do = '?viewCat='.$cat.'&';
+	my $part = 0;
+	
 	foreach my $item(@entries)
 	{
 		my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
@@ -326,75 +270,7 @@ if(r('viewCat') ne '')
 		push(@thisCategoryEntries, $item);
 		}
 	}
-	
-	# Pagination - This is the so called Pagination
-	my $page = r('p');																# The current page
-	if($page eq ''){ $page = 1; }													# Makes page 1 the default page
-	my $totalPages = ceil((scalar(@thisCategoryEntries))/$config_entriesPerPage);	# How many pages will be?
-	# What part of the array should i show in the page?
-	my $arrayEnd = ($config_entriesPerPage*$page);									# The array will start from this number
-	my $arrayStart = $arrayEnd-($config_entriesPerPage-1);							# And loop till this number
-	# As arrays start from 0, i will lower 1 to these values
-	$arrayEnd--;
-	$arrayStart--;
-
-	my $i = $arrayStart;															# Start Looping...
-	while($i<=$arrayEnd)
-	{
-		unless($thisCategoryEntries[$i] eq '')
-		{
-			my @finalEntries = split(/¬/, $thisCategoryEntries[$i]);
-			my @categories = split (/'/, $finalEntries[3]);
-
-			#show entries with slide effect
-			print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><div class="hide"><a href="?viewDetailed='.$finalEntries[4].'">'.$locale{$lang}->{comments}.' </a> '.$config_customHTMLpost.'</br>
-			'.$finalEntries[1].'<br /><br /></div><footer>'.$locale{$lang}->{postedon}.' '.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
-			for (0..$#categories){
-				print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-			}
-			print '<br /></footer><br /><br /></div>'; 
-		}
-		$i++;
-	}
-	# Now i will display the pages
-	if($totalPages >= 1)
-	{
-		print $locale{$lang}->{pages};
-	}
-	else
-	{
-		print $locale{$lang}->{nocategory};
-	}
-	
-	my $startPage = $page == 1 ? 1 : ($page-1);
-	my $displayed = 0;
-	for(my $i = $startPage; $i <= (($page-1)+$config_maxPagesDisplayed); $i++)
-	{
-		if($i <= $totalPages)
-		{
-			if($page != $i)
-			{
-				if($i == (($page-1)+$config_maxPagesDisplayed) && (($page-1)+$config_maxPagesDisplayed) < $totalPages)
-				{
-					print '<a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ...';
-				}
-				elsif($startPage > 1 && $displayed == 0)
-				{
-					print '... <a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ';
-					$displayed = 1;
-				}
-				else
-				{
-					print '<a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ';
-				}
-			}
-			else
-			{
-				print '['.$i.'] ';
-			}
-		}
-	}
-	print '';
+	doPages($do, $part, @thisCategoryEntries);	
 }
 
 #search
@@ -796,99 +672,16 @@ else
 	my @tmpEntries = getFiles($config_postsDatabaseFolder);
 	my @entries=();
 	my @pages = getPages();
+	my $do='?';
+	my $part=0;
+	
 	foreach my $item(@tmpEntries)
 		{
 			my @split = split(/¬/, $item);
 			unless (grep {$_ eq $split[4] } @pages){push(@entries, $item);}
 		}
-		
-	if(scalar(@entries) != 0)
-	{
-		# Pagination - This is the so called Pagination
-		my $page = r('page');												# The current page
-		if($page eq ''){ $page = 1; }										# Makes page 1 the default page
-		my $totalPages = ceil((scalar(@entries))/$config_entriesPerPage);	# How many pages will be?
-		# What part of the array should i show in the page?
-		my $arrayEnd = ($config_entriesPerPage*$page);						# The array will start from this number
-		my $arrayStart = $arrayEnd-($config_entriesPerPage-1);				# And loop till this number
-		# As arrays start from 0, i will lower 1 to these values
-		$arrayEnd--;
-		$arrayStart--;
-
-		my $i = $arrayStart;												# Start Looping...
-		while($i<=$arrayEnd)
-		{
-			unless($entries[$i] eq '')
-			{
-				#check for pages
-				my @finalEntries = split(/¬/, $entries[$i]);
-				my @categories = split (/'/, $finalEntries[3]);
-
-				# This is for displaying how many comments are posted on that entry
-				my $commentsLink;
-				my $content;
-				open(FILE, "<$config_commentsDatabaseFolder/$finalEntries[4].$config_dbFilesExtension");
-				while(<FILE>){$content.=$_;}
-				close FILE;
-					
-				my @comments = split(/'/, $content);
-				if(scalar(@comments) == 0)
-				{
-					$commentsLink = $locale{$lang}->{nocomment};
-				}
-				elsif(scalar(@comments) == 1)
-				{
-					$commentsLink = '1 '.$locale{$lang}->{comment};
-				}
-				else
-				{
-					$commentsLink = scalar(@comments).$locale{$lang}->{comments};
-				}
-				#print entry
-				print '<h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><a href="?viewDetailed='.$finalEntries[4].'">'.$commentsLink.'</a> '.$config_customHTMLpost.'</br>'.$finalEntries[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
-				for (0..$#categories){
-				print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-				}
-				print '</footer><br /><br />'; 
-			}
-		$i++;
-		}
-		# Now i will display the pages
-		print $locale{$lang}->{pages};
-		my $startPage = $page == 1 ? 1 : ($page-1);
-		my $displayed = 0;
-		for(my $i = $startPage; $i <= (($page-1)+$config_maxPagesDisplayed); $i++)
-		{
-			if($i <= $totalPages)
-			{
-				if($page != $i)
-				{
-					if($i == (($page-1)+$config_maxPagesDisplayed) && (($page-1)+$config_maxPagesDisplayed) < $totalPages)
-					{
-						print '<a href="?page='.$i.'">['.$i.']</a> ...';
-					}
-					elsif($startPage > 1 && $displayed == 0)
-					{
-						print '... <a href="?page='.$i.'">['.$i.']</a> ';
-						$displayed = 1;
-					}
-					else
-					{
-						print '<a href="?page='.$i.'">['.$i.']</a> ';
-					}
-				}
-				else
-				{
-					print '['.$i.'] ';
-				}
-			}
-		}
-		
-	}
-	else
-	{
-		print $locale{$lang}->{noentries};
-	}
+	
+	doPages($do, $part, @entries);
 }
 #footer
 print '</div><footer id="footer">'.$config_blogFooter.'</footer></div></body></html>';

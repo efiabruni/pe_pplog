@@ -107,72 +107,18 @@ foreach(@config_pluginsAdmin)
 }
 # 100613 added sc0ttmans UTF-8 fix
 print '<a href="?do=listPag">'.$locale{$lang}->{listPag}.'</a>
-<a href=?do=archive>'.$locale{$lang}->{archive}.'</a>
-<form id="mobile" accept-charset="UTF-8" name="form1" method="post" style=" text-align:center; margin-left:1%; width:98%">
-<input type="text" name="keyword" value="'.$locale{$lang}->{search}.'">
-<input type="hidden" name="do" value="search">
-<input type="submit" name="Submit" value="'.$locale{$lang}->{search}.'"><br />
-'.$locale{$lang}->{bytitle}.'<input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.'<input name="by" type="radio" value="1">
-</form> 
-</div></header>
-<nav><h1>'.$locale{$lang}->{search}.'</h1>
-<form accept-charset="UTF-8" name="form1" method="post">
-<input type="text" name="keyword" style="width:150px">', # search field 100613 added sc0ttmans UTF-8 fix
-'<input type="hidden" name="do" value="search"><br />
-'.$locale{$lang}->{bytitle}.'<input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.'<input name="by" type="radio" value="1">
-</form>
-<h1>'.$locale{$lang}->{entries}.'</h1>';
-#latest entries 
-my @tmpEntries = getFiles($config_postsDatabaseFolder);
-my @entriesOnMenu=();
-my @pages = getPages();
-my $i = 0;
+<a href=?do=archive>'.$locale{$lang}->{archive}.'</a>';
+menuMobileSearch();
+print '</div></header><nav>';
 
-foreach my $item(@tmpEntries)
-	{
-		my @split = split(/¬/, $item);
-		unless (grep {$_ eq $split[4] } @pages){push(@entriesOnMenu, $item);}
-	}
+menuSearch();#search
+menuEntries();#entries
+menuCategories();#Categories 
 
-foreach(@entriesOnMenu)
-{
-	if($i <= $config_menuEntriesLimit)
-	{
-		my @entry = split(/¬/, $_);
-		print '<a href="?viewDetailed=posts/'.$entry[4].'">'.$entry[0].'</a>';
-		$i++;
-	}
-}
-#Categories 
-print '<h1>'.$locale{$lang}->{categories}.'</h1>';
-my @categories = sort(getCategories());
-foreach(@categories)
-{
-	print '<a href="?viewCat='.$_.'">'.$_.'</a>';
-}
 # Latest comments on the menu 
 if($config_showLatestComments == 1)
 {
-		
-	my @comments = getComments();
-	
-	if(scalar(@comments) > 0)
-	{
-		print '<h1>'.$locale{$lang}->{comments}.'</h1>
-		<a href="?do=listComments">'.$locale{$lang}->{listComments}.' »</a>';
-	}
-	
-	my $i = 0;
-	
-	foreach(@comments)
-	{
-		if($i <= $config_showLatestCommentsLimit)
-		{
-			my @entry = split(/"/, $_);
-			print '<a href="?viewDetailed=posts/'.$entry[4].'#'.$entry[5].'" title="'.$locale{$lang}->{entryby}.' '.$entry[1].'">'.$entry[0].'</a>'; #sc0ttman
-			$i++;
-		}
-	}
+	menuComments();
 }
 
 if(($config_showUsersOnline == 1) || ($config_showHits == 1)) #show stats for the main blog
@@ -246,49 +192,7 @@ unless ($cookie eq $value || $log_in eq "logged"){
 
 if(r('do') eq 'newEntry')
 {
-	# Blog Add New Entry Form
-	# 100613 added sc0ttmans UTF-8 fix
-		my @categories = getCategories();
-		print '<h1>'.$locale{$lang}->{new}.'...</h1>	
-		<form accept-charset="UTF-8" action="" name="submitform" method="post">
-		<table><tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name=title type=text id=title></td>
-		</tr>';
-		
-		bbcodeButtons();
-		
-		print '<td><textarea name="content" cols="50" rows="15" id="content"></textarea></td></tr>
-		<tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.'">(?)</span></td><td>';
-
-			
-		my $i = 1;
-		foreach(@categories)
-		{
-			if($i < scalar(@categories))	# Here we display a comma between categories so is easier to undesrtand
-			{
-				print $_.', ';
-			}
-			else
-			{
-				print $_;
-			}
-			$i++;
-		}
-		print '</td></tr>
-		<tr><td>&nbsp;</td><td><input name="category" type="text" id="category"></td></tr>
-		<tr>
-		<td>'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span></td>
-		<td><input type="checkbox" name="isPage" value="1"> '.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span>
-		<input type="checkbox" name="isHTML" value="1"></td>
-		</tr>
-		<tr>
-		<td><input name="dir" type="hidden" value="/posts">
-		<input name="process" type="hidden" id="process" value="newEntry"></td> 
-		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'"></td>
-		</tr>
-		</table>
-		</form>';
+	doNewEntry();
 }
 
 elsif(r('process') eq 'newEntry')
@@ -807,6 +711,9 @@ elsif(r('do') eq 'listPag')
 	my @pages = getPages();
 	my @entries = getFiles($config_postsDatabaseFolder);
 	my @tempEntries = ();
+	my $do = '?do=listPag&';
+	my $part = 1;
+	
     foreach my $item(@entries)
 	{
 		my @split = split(/¬/, $item);	
@@ -815,73 +722,8 @@ elsif(r('do') eq 'listPag')
 		 push (@tempEntries, $item);
 		}
 	}
-	# Pagination - This is the so called Pagination
-	my $page = r('page');																# The current page
-	if($page eq ''){ $page = 1; }													# Makes page 1 the default page
-	my $totalPages = ceil((scalar(@tempEntries))/$config_entriesPerPage);	# How many pages will be?
-	# What part of the array should i show in the page?
-	my $arrayEnd = ($config_entriesPerPage*$page);									# The array will start from this number
-	my $arrayStart = $arrayEnd-($config_entriesPerPage-1);							# And loop till this number
-	# As arrays start from 0, i will lower 1 to these values
-	$arrayEnd--;
-	$arrayStart--;
-	
-    my $i = $arrayStart;															# Start Looping...
-	while($i<=$arrayEnd)
-	{
-		unless($tempEntries[$i] eq '')
-		{
-			my @finalEntries = split(/¬/, $tempEntries[$i]);
-			my @categories = split (/'/, $finalEntries[3]);
-			
-			# display the pages (with a slide out effect)
-				print '<div class="article"><h1><a href="?viewDetailed=posts/'.$finalEntries[4].'">'.$finalEntries[0].'</a> &nbsp; <small><a href="?edit=posts/'.$finalEntries[4].'">'.$locale{$lang}->{e}.'</a> - <a href="?delete=posts/'.$finalEntries[4].'">'.$locale{$lang}->{d}.'</a></small></h1>
-				<div class="hide"><a href="?viewDetailed=posts/'.$finalEntries[4].'">'.$locale{$lang}->{comments}.'</a><br /><br />'.$finalEntries[1].'<br /></div></br><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.':';
-				for (0..$#categories)
-				{
-					print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-				}
-					print '<br /></footer><br /><br /></div>'; 
-		}
-		$i++;
-	}
-	#Pages
-	if($totalPages >= 1)
-	{
-		print $locale{$lang}->{pages};
-	}
-	else
-	{
-		print '<br />'.$locale{$lang}->{nopages1}.' <a href="?do=newEntry">'.$locale{$lang}->{nopages2}.'</a>?';
-	}
-	my $startPage = $page == 1 ? 1 : ($page-1);
-	my $displayed = 0;
-	for(my $i = $startPage; $i <= (($page-1)+$config_maxPagesDisplayed); $i++)
-	{
-		if($i <= $totalPages)
-		{
-			if($page != $i)
-			{
-				if($i == (($page-1)+$config_maxPagesDisplayed) && (($page-1)+$config_maxPagesDisplayed) < $totalPages)
-				{
-					print '<a href="?do=listPag&page='.$i.'">['.$i.']</a> ...';
-				}
-				elsif($startPage > 1 && $displayed == 0)
-				{
-					print '... <a href="?do=listPag&page='.$i.'">['.$i.']</a> ';
-					$displayed = 1;
-				}
-				else
-				{
-					print '<a href="?do=listPag&page='.$i.'">['.$i.']</a> ';
-				}
-			}
-			else
-			{
-				print '['.$i.'] ';
-			}
-		}
-	}
+
+doPages($do, $part, @tempEntries);
 }
 
 elsif(r('viewCat') ne '')
@@ -891,6 +733,9 @@ elsif(r('viewCat') ne '')
 	my $cat = r('viewCat');
 	my @entries = getFiles($config_postsDatabaseFolder);
 	my @thisCategoryEntries = ();
+	my $do = '?viewCat='.$cat.'&';
+	my $part = 1;
+	
 	foreach my $item(@entries)
 	{
 		my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
@@ -900,75 +745,7 @@ elsif(r('viewCat') ne '')
 		push(@thisCategoryEntries, $item);
 		}
 	}
-	
-	# Pagination - This is the so called Pagination
-	my $page = r('p');																# The current page
-	if($page eq ''){ $page = 1; }													# Makes page 1 the default page
-	my $totalPages = ceil((scalar(@thisCategoryEntries))/$config_entriesPerPage);	# How many pages will be?
-	# What part of the array should i show in the page?
-	my $arrayEnd = ($config_entriesPerPage*$page);									# The array will start from this number
-	my $arrayStart = $arrayEnd-($config_entriesPerPage-1);							# And loop till this number
-	# As arrays start from 0, i will lower 1 to these values
-	$arrayEnd--;
-	$arrayStart--;
-
-	my $i = $arrayStart;															# Start Looping...
-	while($i<=$arrayEnd)
-	{
-		unless($thisCategoryEntries[$i] eq '')
-		{
-			my @finalEntries = split(/¬/, $thisCategoryEntries[$i]);
-			my @categories = split (/'/, $finalEntries[3]);
-			
-			# display entries with JQuery show/hide effect
-			print '<div class="article"><h1><a href="?viewDetailed=posts/'.$finalEntries[4].'">'.$finalEntries[0].'</a> &nbsp; <small><a href="?edit=posts/'.$finalEntries[4].'">'.$locale{$lang}->{e}.'</a> - <a href="?delete=posts/'.$finalEntries[4].'">'.$locale{$lang}->{d}.'</a></small></h1>
-			<div class="hide"><a href="?viewDetailed=posts/'.$finalEntries[4].'">'.$locale{$lang}->{comments}.'</a><br /><br />'.$finalEntries[1].'<br /></div></br><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.':';
-			for (0..$#categories){
-				print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-			}
-			print '<br /></footer><br /><br /></div>'; 
-		}
-		$i++;
-	}
-	# Now i will display the pages
-	if($totalPages >= 1)
-	{
-		print $locale{$lang}->{pages};
-	}
-	else
-	{
-		print '<br />'.$locale{$lang}->{nocategory};
-	}
-	
-	my $startPage = $page == 1 ? 1 : ($page-1);
-	my $displayed = 0;
-	for(my $i = $startPage; $i <= (($page-1)+$config_maxPagesDisplayed); $i++)
-	{
-		if($i <= $totalPages)
-		{
-			if($page != $i)
-			{
-				if($i == (($page-1)+$config_maxPagesDisplayed) && (($page-1)+$config_maxPagesDisplayed) < $totalPages)
-				{
-					print '<a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ...';
-				}
-				elsif($startPage > 1 && $displayed == 0)
-				{
-					print '... <a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ';
-					$displayed = 1;
-				}
-				else
-				{
-					print '<a href="?viewCat='.$cat.'&p='.$i.'">['.$i.']</a> ';
-				}
-			}
-			else
-			{
-				print '['.$i.'] ';
-			}
-		}
-	}
-	print '';
+	doPages($do, $part, @thisCategoryEntries);
 }
 #search
 elsif(r('do') eq 'search')
@@ -1100,51 +877,7 @@ else
 	}
 	print '</table><br />';
 	#New entry form
-	my @categories = getCategories();
-	# 100613 added sc0ttmans UTF-8 fix 
-	print '<h1>'.$locale{$lang}->{new}.'...</h1>	
-		<form accept-charset="UTF-8" action="" name="submitform" method="post">
-		<table><tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name=title type=text id=title></td>
-		</tr>';
-		
-		bbcodeButtons();
-		
-	print '<td><textarea name="content" cols="50" rows="15" id="content"></textarea></td></tr>
-		<tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.' ">(?)</span></td>
-		<td>';
-				
-		$i = 1;
-		foreach(@categories)
-		{
-			if($i < scalar(@categories))	# Here we display a comma between categories so is easier to undesrtand
-			{
-				print $_.', ';
-			}
-			else
-			{
-				print $_;
-			}
-			$i++;
-		}
-		print '</td></tr>
-		<tr><td></td>
-		<td><input name="category" type="text" id="category"></td></tr>
-		<tr>
-		<td>'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span></td>
-		<td><input type="checkbox" name="isPage" value="1"></td></tr>
-		<tr>
-		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span></td>
-		<td><input type="checkbox" name="isHTML" value="1"></td>
-		</tr>
-		<tr>
-		<td><input name="dir" type="hidden" value="/posts">
-		<input name="process" type="hidden" id="process" value="newEntry"></td> 
-		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'"></td>
-		</tr>
-		</table>
-		</form>';
+	doNewEntry();
 }
 			
 print '</div></body></html>';

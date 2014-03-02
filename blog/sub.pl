@@ -14,6 +14,7 @@ sub basic_r
 {
 	param($_[0]);
 }
+
 #Bbcode to html
 sub bbcode
 {
@@ -85,7 +86,6 @@ s/<input (.+?) src=(.+?)\/><div class=box><h3>(.+?)<\/h3>(.+?)<\/div>/\{box=$2\}
 
 	return $_;
 }
-
 sub bbcodeButtons #Buttons for entry and edit 
 {
 	opendir (SM, $config_serverRoot.$config_smiliesFolder);
@@ -115,7 +115,6 @@ sub bbcodeButtons #Buttons for entry and edit
 			print '<br /><input type=image alt="'.$locale{$lang}->{bbcode}.'"><div class=box /><iframe src=?BbcodeHelp=help#content target="_blank" width=650px height=90%></iframe></div></td>';
 
 }
-
 sub bbcodeComments #Buttons for comments
 {
 	opendir (SM, $config_serverRoot.$config_smiliesFolder);
@@ -142,7 +141,18 @@ sub bbcodeComments #Buttons for comments
 		closedir SM;
 }
 
-sub getdate#time according to given timezone
+sub getIP #return ip in standard format
+{
+	my $ip;
+	if (defined $ENV{'HTTP_X_FORWARDED_FOR'}){
+		$ip = $ENV{'HTTP_X_FORWARDED_FOR'}; 
+		$ip =~ s/::ffff:(.*)/$1/;
+		}
+	else {$ip = $ENV{'REMOTE_ADDR'};}
+	return $ip;
+}
+
+sub getdate #time according to given timezone
 {
 	my $gmt = $_[0];
 	my $day = 1440;
@@ -164,8 +174,7 @@ sub getdate#time according to given timezone
 	return $time[0].' '.$dat[1].' '.$dat[4].', '.$time[1].':'.$time[2];
 }
 
-#everything only added once
-sub array_unique
+sub array_unique #everything only added once
 {
 	my %seen = ();
 	@_ = grep { ! $seen{ $_ }++ } @_;
@@ -236,6 +245,7 @@ sub getPages #get the pages
 	
 	my @pages = split(/-/, $pagesContent);
 }
+
 #get comments
 sub getComments
 {
@@ -250,9 +260,214 @@ sub getComments
 	my @comments = split(/'/, $content);	
 	@comments = reverse(@comments);			# We want newer first right?
 }
-#list all comments
-sub listComments
+
+#subs for the menu
+sub menuMobileSearch
 {
+	print '<form id="mobile" accept-charset="UTF-8" name="form1" method="post" style=" text-align:center; margin-left:1%; width:98%">
+	<input type="text" name="keyword">
+	<input type="hidden" name="do" value="search">
+	<input type="submit" name="Submit" value="'.$locale{$lang}->{search}.'"><br />
+	'.$locale{$lang}->{bytitle}.' <input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.' <input name="by" type="radio" value="1">
+	</form> ';
+}
+sub menuSearch
+{
+	print '<h1>'.$locale{$lang}->{search}.'</h1>
+			<form accept-charset="UTF-8" name="form1" method="post">
+			<input type="text" name="keyword" style="width:150px">', # search field 100613 added sc0ttmans UTF-8 fix
+			'<input type="hidden" name="do" value="search"><br />
+			'.$locale{$lang}->{bytitle}.'<input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.'<input name="by" type="radio" value="1">
+			</form>';
+}
+sub menuEntries
+{
+	print'<h1>'.$locale{$lang}->{entries}.'</h1>';
+	#latest entries 
+	my @tmpEntries = getFiles($config_postsDatabaseFolder);
+	my @entriesOnMenu=();
+	my @pages = getPages();
+	my $i = 0;
+
+	foreach my $item(@tmpEntries)
+		{
+			my @split = split(/¬/, $item);
+			unless (grep {$_ eq $split[4] } @pages){push(@entriesOnMenu, $item);}
+		}
+
+	foreach(@entriesOnMenu)
+	{
+		if($i <= $config_menuEntriesLimit)
+		{
+			my @entry = split(/¬/, $_);
+			print '<a href="?viewDetailed=posts/'.$entry[4].'">'.$entry[0].'</a>';
+			$i++;
+		}
+	}
+}
+sub menuCategories
+{
+	print' <h1>'.$locale{$lang}->{categories}.'</h1>';				
+	my @categories = sort(getCategories());
+	foreach(@categories)
+	{
+		print '<a href="?viewCat='.$_.'">'.$_.'</a>';
+	}
+}
+sub menuComments
+{
+		
+	my @comments = getComments();
+	
+	if(scalar(@comments) > 0)
+	{
+		print '<h1>'.$locale{$lang}->{comments}.'</h1>
+		<a href="?do=listComments">'.$locale{$lang}->{listComments}.' »</a>';
+	}
+	
+	my $i = 0;
+	
+	foreach(@comments)
+	{
+		if($i <= $config_showLatestCommentsLimit)
+		{
+			my @entry = split(/"/, $_);
+			print '<a href="?viewDetailed=posts/'.$entry[4].'#'.$entry[5].'" title="'.$locale{$lang}->{entryby}.' '.$entry[1].'">'.$entry[0].'</a>'; #sc0ttman
+			$i++;
+		}
+	}
+}
+
+#sub for contents
+sub doPages
+{	
+	my @tempEntries = @_;
+	my $do = shift @tempEntries;
+	my $part = shift @tempEntries;
+	
+	# Pagination - This is the so called Pagination
+	my $page = r('page');																# The current page
+	if($page eq ''){ $page = 1; }													# Makes page 1 the default page
+	my $totalPages = ceil((scalar(@tempEntries))/$config_entriesPerPage);	# How many pages will be?
+	# What part of the array should i show in the page?
+	my $arrayEnd = ($config_entriesPerPage*$page);									# The array will start from this number
+	my $arrayStart = $arrayEnd-($config_entriesPerPage-1);							# And loop till this number
+	# As arrays start from 0, i will lower 1 to these values
+	$arrayEnd--;
+	$arrayStart--;
+	
+    my $i = $arrayStart;															# Start Looping...
+	while($i<=$arrayEnd)
+	{
+		unless($tempEntries[$i] eq '')
+		{
+			my @finalEntries = split(/¬/, $tempEntries[$i]);
+			my @categories = split (/'/, $finalEntries[3]);
+			
+			if ($part == 1){
+				# display the entries for admin pages
+				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a> &nbsp; <small><a href="?edit=posts/'.$finalEntries[4].'">'.$locale{$lang}->{e}.'</a> - <a href="?delete=posts/'.$finalEntries[4].'">'.$locale{$lang}->{d}.'</a></small></h1>
+				<a href="?viewDetailed='.$finalEntries[4].'">'.$locale{$lang}->{comments}.'</a><br /><br />'.$finalEntries[1].'<br /></br><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.':';
+			}
+			else{
+				#show entries for main blog
+				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><a href="?viewDetailed='.$finalEntries[4].'">'.$locale{$lang}->{comments}.' </a> '.$config_customHTMLpost.'</br>
+				'.$finalEntries[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.' '.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
+			}
+			for (0..$#categories)
+				{
+					print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
+				}
+					print '<br /></footer><br /><br /></div>'; 
+		}
+		$i++;
+	}
+	#Pages
+	if ($totalPages >= 1)
+	{
+		print $locale{$lang}->{pages};
+	}
+	else
+	{
+		print '<br />'.$locale{$lang}->{nopages1}.' <a href="?do=newEntry">'.$locale{$lang}->{nopages2}.'</a>?' if $part==1;
+	}
+	my $startPage = $page == 1 ? 1 : ($page-1);
+	my $displayed = 0;
+	for(my $i = $startPage; $i <= (($page-1)+$config_maxPagesDisplayed); $i++)
+	{
+		if($i <= $totalPages)
+		{
+			if($page != $i)
+			{
+				if($i == (($page-1)+$config_maxPagesDisplayed) && (($page-1)+$config_maxPagesDisplayed) < $totalPages)
+				{
+					print '<a href="'.$do.'page='.$i.'">['.$i.']</a> ...';
+				}
+				elsif($startPage > 1 && $displayed == 0)
+				{
+					print '... <a href="'.$do.'page='.$i.'">['.$i.']</a> ';
+					$displayed = 1;
+				}
+				else
+				{
+					print '<a href="'.$do.'page='.$i.'">['.$i.']</a> ';
+				}
+			}
+			else
+			{
+				print '['.$i.'] ';
+			}
+		}
+	}
+
+}
+sub doNewEntry
+{
+	# Blog Add New Entry Form
+	# 100613 added sc0ttmans UTF-8 fix
+		my @categories = getCategories();
+		print '<h1>'.$locale{$lang}->{new}.'...</h1>	
+		<form accept-charset="UTF-8" action="" name="submitform" method="post">
+		<table><tr>
+		<td>'.$locale{$lang}->{title}.'</td>
+		<td><input name=title type=text id=title></td>
+		</tr>';
+		
+		bbcodeButtons();
+		
+		print '<td><textarea name="content" cols="60" rows="15" id="content"></textarea></td></tr>
+		<tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.'">(?)</span></td><td>';
+
+			
+		my $i = 1;
+		foreach(@categories)
+		{
+			if($i < scalar(@categories))	# Here we display a comma between categories so is easier to undesrtand
+			{
+				print $_.', ';
+			}
+			else
+			{
+				print $_;
+			}
+			$i++;
+		}
+		print '</td></tr>
+		<tr><td>&nbsp;</td><td><input name="category" type="text" id="category"></td></tr>
+		<tr>
+		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span>
+		<input type="checkbox" name="isHTML" value="1">
+		</td><td></td>
+		</tr><tr>
+		<td>'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span>
+		<input type="checkbox" name="isPage" value="1">
+		<input name="process" type="hidden" id="process" value="newEntry"></td> 
+		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">';
+		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{newnote}.'">' if grep {$_ eq 'notes'} @config_pluginsAdmin;
+		print '</td></tr></table></form>';
+}
+sub listComments
+{#list all comments
 	print '<h1>'.$locale{$lang}->{comments}.'</h1>';
 	my @comments = getComments();
 	# This is pagination... Again :]
@@ -317,7 +532,6 @@ sub listComments
 	}
 	print '';
 }
-
 sub doSearch
 {
 	# Search Function
@@ -356,7 +570,6 @@ sub doSearch
 		print '<br />'.$matches.$locale{$lang}->{matches};
 	}
 }
-
 sub doArchive
 {# Show blog archive
 	
@@ -412,7 +625,6 @@ sub doArchive
 			$i++;
 		}			
 }
-
 sub BbcodeHelp 
 # Help Page for Bbcode
 {	print <<EOF;
@@ -447,6 +659,7 @@ width= width</br>
 height= height</br>
 EOF
 }
+
 # Javascript for bbcode buttons	
 sub javascript 
 {
@@ -505,27 +718,13 @@ sub JQuery
 {
 	print '	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
 	 <script> $(document).ready(function(){$(".hide").hide();
-     $(".article .hide ").before("<div id=\'flip\'><a href=\'\' title=\''.$locale{$lang}->{read}.'\'>'.$locale{$lang}->{showhide}.'</a></div>");
-     $(".article #flip").click(function(event){$(this).next(".hide").slideToggle("slow");
-       event.preventDefault(); });
-     $(".slide #flip").mouseover(function(event){
+     $(".slide #flip").click(function(event){
 	 $(this).next(".hide").toggle("slow"); 
 		event.preventDefault(); });
 	$("#mobile").click(function(event){$("header div, form#mobile").slideToggle("slow");
 		event.preventDefault(); });
 	});</script>';
 }	
-#return ip in standard format
-sub getIP
-{
-	my $ip;
-	if (defined $ENV{'HTTP_X_FORWARDED_FOR'}){
-		$ip = $ENV{'HTTP_X_FORWARDED_FOR'}; 
-		$ip =~ s/::ffff:(.*)/$1/;
-		}
-	else {$ip = $ENV{'REMOTE_ADDR'};}
-	return $ip;
-}
 
 
 return 1;
