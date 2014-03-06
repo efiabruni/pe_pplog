@@ -300,7 +300,7 @@ sub menuEntries
 		if($i <= $config_menuEntriesLimit)
 		{
 			my @entry = split(/¬/, $_);
-			print '<a href="?viewDetailed=posts/'.$entry[4].'">'.$entry[0].'</a>';
+			print '<a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a>';
 			$i++;
 		}
 	}
@@ -332,7 +332,7 @@ sub menuComments
 		if($i <= $config_showLatestCommentsLimit)
 		{
 			my @entry = split(/"/, $_);
-			print '<a href="?viewDetailed=posts/'.$entry[4].'#'.$entry[5].'" title="'.$locale{$lang}->{entryby}.' '.$entry[1].'">'.$entry[0].'</a>'; #sc0ttman
+			print '<a href="?viewDetailed='.$entry[4].'#'.$entry[5].'" title="'.$locale{$lang}->{entryby}.' '.$entry[1].'">'.$entry[0].'</a>'; #sc0ttman
 			$i++;
 		}
 	}

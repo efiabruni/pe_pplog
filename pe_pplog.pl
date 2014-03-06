@@ -73,8 +73,6 @@ if(r('do') eq 'RSS')
 	</rss>';
 }
 
-
-
 else
 {
 print header(-charset => qw(utf-8)),'<!DOCTYPE html>
