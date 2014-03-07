@@ -364,6 +364,12 @@ sub doPages
 			my @finalEntries = split(/¬/, $tempEntries[$i]);
 			my @categories = split (/'/, $finalEntries[3]);
 			
+			my $commentsLink;
+			my $tmpContent;
+			open(FILE, "<$config_commentsDatabaseFolder/$finalEntries[4].$config_dbFilesExtension");
+			while(<FILE>){$tmpContent.=$_;}
+			close FILE;		
+			
 			my @comments = split(/'/, $tmpContent);
 			if(scalar(@comments) == 0)
 				{
