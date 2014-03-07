@@ -364,14 +364,28 @@ sub doPages
 			my @finalEntries = split(/¬/, $tempEntries[$i]);
 			my @categories = split (/'/, $finalEntries[3]);
 			
+			my @comments = split(/'/, $tmpContent);
+			if(scalar(@comments) == 0)
+				{
+					$commentsLink = $locale{$lang}->{nocomment};
+				}
+			elsif(scalar(@comments) == 1)
+				{
+					$commentsLink = '1 '.$locale{$lang}->{comment};
+				}
+			else
+				{
+					$commentsLink = scalar(@comments).' '.$locale{$lang}->{comments};
+				}
+					
 			if ($part == 1){
 				# display the entries for admin pages
 				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a> &nbsp; <small><a href="?edit=posts/'.$finalEntries[4].'">'.$locale{$lang}->{e}.'</a> - <a href="?delete=posts/'.$finalEntries[4].'">'.$locale{$lang}->{d}.'</a></small></h1>
-				<a href="?viewDetailed='.$finalEntries[4].'">'.$locale{$lang}->{comments}.'</a><br /><br />'.$finalEntries[1].'<br /></br><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.':';
+				<a href="?viewDetailed='.$finalEntries[4].'">'.$commentsLink.'</a><br /><br />'.$finalEntries[1].'<br /></br><footer>'.$locale{$lang}->{postedon}.$finalEntries[2].' - '.$locale{$lang}->{categories}.':';
 			}
 			else{
 				#show entries for main blog
-				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><a href="?viewDetailed='.$finalEntries[4].'">'.$locale{$lang}->{comments}.' </a> '.$config_customHTMLpost.'</br>
+				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><a href="?viewDetailed='.$finalEntries[4].'">'.$commentsLink.' </a> '.$config_customHTMLpost.'</br>
 				'.$finalEntries[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.' '.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
 			}
 			for (0..$#categories)
