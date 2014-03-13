@@ -813,34 +813,36 @@ else
 			print FILE $newPages;
 			close FILE;
 		}
-	}
-	#delete comments from post
-	if (-e "$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension")
-	{
-		open(FILE, "<$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
-		$newContent = '';
-		while(<FILE>)
-			{
+	
+		#delete comments from post
+		if (-e "$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension")
+		{
+			open(FILE, "<$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
+			$newContent = '';
+			while(<FILE>)
+				{
 				$newContent.=$_;
-			}
+				}
 			close FILE;
 		
-		@comments = split(/'/, $newContent);
-		my $finalCommentsToAdd;
-		foreach(@comments)
-		{
-			my @parts = split (/"/, $_);
-			unless($parts[4] eq $fileNum)
+			@comments = split(/'/, $newContent);
+			my $finalCommentsToAdd;
+			foreach(@comments)
 			{
-				$finalCommentsToAdd.=$_."'";
+				my @parts = split (/"/, $_);
+				unless($parts[4] eq $fileNum)
+				{
+					$finalCommentsToAdd.=$_."'";
+				}
 			}
-		}
 		
-		open(FILE, "+>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");	# Open for writing, and delete everything else
-		print FILE $finalCommentsToAdd;
-		close FILE;
-		unlink("$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension")
+			open(FILE, "+>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");	# Open for writing, and delete everything else
+			print FILE $finalCommentsToAdd;
+			close FILE;
+			unlink("$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
+		}
 	}
+	
 	#finally delete post
 	unlink("$config_DatabaseFolder/$fileName.$config_dbFilesExtension");		
 	print '</br>'.$locale{$lang}->{deentry};
