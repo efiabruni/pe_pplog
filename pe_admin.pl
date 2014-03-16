@@ -268,6 +268,7 @@ elsif(r('process') eq 'newEntry')
 elsif(r('edit') ne '')
 {
 	# Edit Entry Page
+	# Efia also no more passwords
 	
 		my $id = r('edit');
 		my $tempContent = '';
@@ -278,6 +279,7 @@ elsif(r('edit') ne '')
 		}
 		close FILE;
 		my @entry = split(/¬/, $tempContent);
+		my @pages = getPages();
 		my $fileName = $entry[4];
 		my $title = $entry[0];
 		my $content = $entry[1];
@@ -291,12 +293,13 @@ elsif(r('edit') ne '')
 		<td><input name=title type=text id=title value="'.$title.'"></td>
 		</tr>';
 		bbcodeButtons();
-		print '<td><textarea name=content cols=50" rows="15" id="content">';
+		print '<td><textarea name=content cols="57" rows="15" id="content">';
+		
+		#Efia added new buttons, took out WYSIWYG option and html option, bbdecode does not seem to hurt text entered as html
 		
 			print bbdecode($content);
 		
 		print '</textarea></td></tr><tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.' ">(?)</span></td><td>'; #Cat. tooltip 24.05.13
-;
 		my @categories = getCategories();
 		my $i = 1;
 		foreach(@categories)
@@ -315,13 +318,18 @@ elsif(r('edit') ne '')
 		<td><input name="category" type="text" id="category" value="'.$category.'"></td>
 		</tr>
 		<tr>	
-		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span></td>
-		<td><input type="checkbox" name="isHTML" value="1"></td>
+		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span>
+		<input type="checkbox" name="isHTML" value="1"></td><td>';
+		print $locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span>
+		<input type="checkbox" name="isPage" value="1">' unless (grep { $_ == $entry[4] } @pages) ;
+		print'</td>
 		</tr>
 		<tr>
-		<td><input name="process" type="hidden" id="process" value="editEntry">
-		<input name="fileName" type="hidden" id="fileName" value="'.$id.'"></td>
-		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{edentry}.'"></td>
+		<td><input name="process" type="hidden" id="process" value="doEntry">
+		<input name="viewDetailed" type="hidden" id="viewDetailed" value="'.$id.'"></td>
+		<td>';
+		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">' if ($id =~ /notes/);
+		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{edentry}.'"></td>
 		</tr>
 		</table>
 		</form>';
@@ -393,103 +401,69 @@ elsif (r('Submit') eq $locale{$lang}->{preview})
 }
 
 #Display Individual Entry and all processes which end with displaying an entry
-elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $locale{$lang}->{addcomment} || r('process') eq 'deleteComment')
+elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doComment' || r('process') eq 'deleteComment')
 {
-	
 	my $fileName = r('viewDetailed');
-	$fileName = "posts/".$fileName if $fileName =~ /^(\d\d\d)/; #if there is no folder indication it is assumed to be a post
+	   $fileName = "posts/".$fileName if $fileName =~ /^(\d\d\d)/; #if there is no folder indication it is assumed to be a post
 	my @split= split (/\//, $fileName);
 	my $fileNum = $split[1];
-	my @comments;
-	my $content;
-	my $do = 1;
-	
- 
-	if(r('process') eq 'editEntry')
-	{
-	# Edit process
-	
-		my $title = r('title');
-		my $isHTML = r('isHTML');				
-		if($isHTML == 0)
-		{
-			$content = bbcode(r('content'));
-		}
-		else
-		{
-			$content = basic_r('content'); #if entry is html
-		}
-		my $category = r('category');
-		$fileName = r('fileName');
-		@split= split (/\//, $fileName); #get the file number
-		$fileNum = $split[1];
-		
-		
-		open(FILE, "+>$config_DatabaseFolder/$fileName.$config_dbFilesExtension");
-		
-		if($title eq '' or $content eq '' or $category eq '')
-		{
-			die($locale{$lang}->{necessary});
-		}
-		
-		my $date = getdate($config_gmt);
-		print FILE $title.'¬'.$content.'¬'.$date.'¬'.$category.'¬'.$fileNum;	# 0: Title, 1: Content, 2: Date, 3: Category, 4: FileName
-		close FILE;
-	}
-	
-	if(r('Submit') eq $locale{$lang}->{addcomment})
-	{
-	# Send Comment Process
-	# Shorter for admin, no identity checking, security code or other
-	
-	$fileNum = r('Comment');
-	$fileName = "posts/".$fileNum;
-	my $posttitle = r('postTitle');
-	my $title = r('title');
+	my $i = 0;
+	my $tempContent;
+	my @comments; #
+	my $postTitle = r('postTitle');
+	my $comTitle = r('comTitle');
 	my $author = $config_commentsForbiddenAuthors[0]; 
-	$content =bbcode(r('content')); # the ' was giving problems with displying it, now it gets encoded, thanks to Jamesbond for the solution
+	my $comContent =bbcode(r('comContent')); # the ' was giving problems with displying it, now it gets encoded, thanks to Jamesbond for the solution
 	my $date = getdate($config_gmt);
 	my $anchor = strftime "%Y%m%d%H%M%S", localtime; #sc0ttman added the anchor
 	
-	if($title eq '' || $content eq '')
+ 
+	if(r('process') eq 'doEntry')
 	{
-		die ($locale{$lang}->{necessary});
-	}
-	else
-	{
-		#check if the comment already exists
-		my $check=$title.'"'.$author.'"'.$content.'"';
-		my $old;
-		open (FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
-		while (<FILE>){$old=$_;}
-		close FILE;
-		if ($old=~ /$check/){
-			print '<br />'.$locale{$lang}->{comtwice};
-			}
-	
-		elsif (length($content) > $config_commentsMaxLenght)#if comment is too long
+		# new or edit entry
+		my $title = r('title');
+		my $content=bbcode(r('content'));
+		my $category = r('category');
+		my $isHTML = r('isHTML');	#Efia HTML checkbox
+		my $isPage = r('isPage');
+		
+		   $content = basic_r('content') if($isHTML == 1);
+
+		if($title eq '' || $content eq '' || $category eq '') #check if everything is filled out
+		{
+			print $locale{$lang}->{necessary};
+			last;
+		}
+		if (r('Submit') eq $locale{$lang}->{newnote} || r('Submit') eq $locale{$lang}->{subentry}) 
+		{
+			my $dir = '/posts'; #according to submit button
+			   $dir = '/notes' if (r('Submit') eq $locale{$lang}->{newnote}); #for Notes
+			my @files = getFiles($config_DatabaseFolder.$dir);
+			my @lastOne = split(/¬/, $files[0]);
+			
+			if($lastOne[4] eq '') #new file with latest number
 			{
-				print '<br />'.$locale{$lang}->{toolong1}.$config_commentsMaxLenght.$locale{$lang}->{toolong2}.length($content);
+				$fileNum = sprintf("%05d",0);
 			}
 			else
 			{
-				my $content = $title.'"'.$author.'"'.$content.'"'.$date.'"'.$fileNum.'"'.$anchor.'"'.$posttitle."'"; #sc0ttman
-				
-				# Add comment
-				open(FILE, ">>$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
-				print FILE $content;
-				close FILE;
-				
-				# Add coment number to a file with latest comments				
-				open(FILE, ">>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
-				print FILE $content;
-				close FILE;
-				
-				print '</br>'.$locale{$lang}->{commentadd}.' <a href="?viewDetailed=posts/'.$fileNum.'#'.$anchor.'">'.$locale{$lang}->{commentview}.'</a>';
+				$fileNum = sprintf("%05d",$lastOne[4]+1);
 			}
+			$fileName = "$dir/$fileNum";
+		}
+
+		open(FILE, ">$config_DatabaseFolder/$fileName.$config_dbFilesExtension");
+		print FILE $title.'¬'.$content.'¬'.$date.'¬'.$category.'¬'.$fileNum; # 0: Title, 1: Content, 2: Date, 3: Category, 4: FileName
+		close FILE;
+
+		if ($isPage == 1 && r('Submit') eq $locale{$lang}->{subentry})
+		{
+			open(FILE, ">>$config_postsDatabaseFolder/pages.$config_dbFilesExtension.page");
+			print FILE $fileNum.'-';
+			close FILE;
 		}
 	}
-	
+
 	if(r('process') eq 'deleteComment')
 	{
 	# Delete Comment Process
@@ -500,25 +474,21 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $l
 		$fileName = "posts/".$fileNum;
 		my $part = $info[1];
 		my $commentToDelete;
+		my $newContent;
+		my @newComments;
 		
 		#get all the comments from the post
+		undef $tempContent;
 		open(FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
 		while(<FILE>)
 		{
-			$content=$_;
+			$tempContent.=$_;
 		}
 		close FILE;
 		
-		@comments = split(/'/, $content);
-			
-			
-			@comments = reverse(@comments); 
-	
-	
-		my $newContent = '';
-		
-		my $i = 0;
-		my @newComments;
+		@comments = split(/'/, $tempContent);
+		@comments = reverse(@comments); 
+
 		#delete the chosen one
 		foreach(@comments)
 		{
@@ -539,8 +509,7 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $l
 		}
 		else #new content of comment file if there were more than one
 		{		
-			reverse(@newComments);
-			
+			reverse(@newComments);	
 			foreach(@newComments)
 			{
 				$newContent.=$_."'";
@@ -553,132 +522,169 @@ elsif(r('viewDetailed') ne '' || r('process') eq 'editEntry'|| r('Submit') eq $l
 		
 		# Now delete comment from the latest comments file where all comments are saved
 		open(FILE, "<$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
-		$newContent = '';
+		undef $tempContent;
 		while(<FILE>)
 		{
-			$newContent.=$_;
+			$tempContent.=$_;
 		}
 		close FILE;
 		
-		@comments = split(/'/, $newContent);
-		my $finalCommentsToAdd;
+		@comments = split(/'/, $tempContent);
+		undef $newContent;
 		foreach(@comments)
 		{
 			unless($_ eq $commentToDelete)
 			{
-				$finalCommentsToAdd.=$_."'";
+				$newContent.=$_."'";
 			}
 		}
 		
 		open(FILE, "+>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");	# Open for writing, and delete everything else
-		print FILE $finalCommentsToAdd;
+		print FILE $newContent;
 		close FILE;
 		
+		$i=0;
 		# Finally print this
 		print '</br>'.$locale{$lang}->{commentdel};
 	}
 
+
 	unless(-e "$config_DatabaseFolder/$fileName.$config_dbFilesExtension")
-	{
-		print '</br>'.$locale{$lang}->{noentry};
-		$do = 0;
-	}
-	
-	# view Detailed
-	if($do == 1)		# Checks if the file exists before doing all this
-	{
-		my $tempContent;
+		{# Checks if the file exists before doing all this
+		print '<br />'.$locale{$lang}->{noentry};
+		last;
+		}
+		# view Detailed
+		undef $tempContent;
 		open(FILE, "<$config_DatabaseFolder/$fileName.$config_dbFilesExtension");
 		while(<FILE>)
 		{
 			$tempContent.=$_;
 		}
 		close FILE;
-		my @entry = split(/¬/, $tempContent);
-		my @categories = split (/'/, $entry[3]); 
-		my $postTitle = $entry[0];
 
-		# display the entry
-		print '<h1><a href="?viewDetailed='.$fileName.'">'.$entry[0].'</a></h1><a href="?edit='.$fileName.'">'.$locale{$lang}->{e}.'</a> - <a href="?delete='.$fileName.'">'.$locale{$lang}->{d}.'</a><br /><br />'.$entry[1].'<br /><br />
-		<footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.':';
-		for (0..$#categories){
-					print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-				} 
-		print '</footer><br /><br />'; 
-	
+		my @entry = split(/¬/, $tempContent);
+		my @categories = split (/'/, $entry[3]);
+	# display the entry
+	print '<h1><a href="?viewDetailed='.$fileName.'">'.$entry[0].'</a></h1><a href="?edit='.$fileName.'">'.$locale{$lang}->{e}.'</a> - <a href="?delete='.$fileName.'">'.$locale{$lang}->{d}.'</a><br /><br />'.$entry[1].'<br /><br />
+	<footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.':';
+	for (0..$#categories){
+		print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
+	}
+	print '</footer><br /><br />';
+
 	if ($fileName =~ /^(post)/){	
 		# Now Display Comments
-		unless(-d $config_commentsDatabaseFolder)		# Does the comments folder exists? We will save comments there...
-		{
-			mkdir($config_commentsDatabaseFolder, 0755);
-		}
-	
-		$content = '';
+		unless(-d $config_commentsDatabaseFolder)	# Does the comments folder exists? We will save comments there...
+			{
+				mkdir($config_commentsDatabaseFolder, 0755);
+			}
+		undef $tempContent;
 		open(FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
 		while(<FILE>)
-		{
-			$content.=$_; 
-		}
+			{
+			$tempContent.=$_;
+			}
 		close FILE;
 		
-		if($content eq '')
+		if($tempContent eq '')
 		{
 			print $locale{$lang}->{nocomments};
 		}
 		else
 		{
 			print '<h1>'.$locale{$lang}->{comments}.':</h1>';
-			
-			@comments = split(/'/, $content);
-				
-		
-			@comments = reverse(@comments); 
-		
+			@comments = split(/'/, $tempContent);
+			@comments = reverse(@comments);
 	
-			my $i = 0;
 			foreach(@comments)
 			{
 				my @comment = split(/"/, $_);
-				#title = $comment[0]; author = $comment[1]; content = $comment[2]; date = $comment[3]; anchor = $comment[5]; 
+				#title = $comment[0]; author = $comment[1]; content = $comment[2]; date = $comment[3]; anchor = $comment[5];
 				#sc0ttman anchor
 				print '<a id="anchor" name="'.$comment[5].'"></a><b>'.$comment[0].'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$comment[3].'</b> '.$locale{$lang}->{by}.' <b>'.$comment[1].'</b><br />';
-				print $comment[2]; 
-				
+				print $comment[2];
 				print '<br /><a href="?deleteComment='.$fileNum.'.'.$i.'">'.$locale{$lang}->{d}.'</a><br /><br />';
 				$i++;	# This is used for deleting comments, to know what comment number it has :]
 			}
 		}
-		# Add comment form
-		# 100613 added sc0ttmans UTF-8 fix
-			print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
-			<form accept-charset="UTF-8" name="submitform" method="post">
-			<table>	<tr>
-			<td>'.$locale{$lang}->{title}.'</td>
-			<td><input name="title" type="text" id="title"></td>
-			</tr>';
-		
-		#bbcode buttons on comment form (or not)
-	if ($config_bbCodeOnCommentaries == 1)
+	if(r('process') eq 'doComment')
 	{
-		bbcodeComments();
+	# Send Comment Process
+	# Shorter for admin, no identity checking, security code or other
+	# Change r('comment' to 'viewDetailed')
+	
+	#check if the comment already exists
+	my $check=$comTitle.'"'.$author.'"'.$comContent;
+	undef $tempContent;
+	open (FILE, "<$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
+	while (<FILE>){$tempContent.=$_;}
+	close FILE;
+	
+	if($comTitle eq '' || $comContent eq '')
+	{
+		print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{necessary};
 	}
+
+	elsif ($tempContent=~ /$check/){
+		print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{comtwice};
+		}
+	
+	elsif(length($comContent) > $config_commentsMaxLenght)#if comment is too long
+		{
+			print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{toolong1}.$config_commentsMaxLenght.$locale{$lang}->{toolong2}.length($comContent);
+		}
+
 	else
-	{
-		print'<tr><td>&nbsp;</td>';
-	}
-	print '<td><textarea name="content" id="content" cols="50" rows="10"></textarea></td>
-			</tr>
-			<tr>
-			<td>
-			<input name="process" type="hidden" id="process" value="sendComment">
-			<input name="Comment" value="'.$fileNum.'" type="hidden" id="Comment">
-			<input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle"></td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'"></td>
-			</tr>
-			</table>
-			</form>';
+		{
+			if (r('Submit') eq $locale{$lang}->{addcomment}){
+				# Add comment
+				open(FILE, ">>$config_commentsDatabaseFolder/$fileNum.$config_dbFilesExtension");
+				print FILE $comTitle.'"'.$author.'"'.$comContent.'"'.$date.'"'.$fileNum.'"'.$anchor.'"'.$postTitle."'"; 
+				close FILE;
+			
+			
+				# Add coment number to a file with latest comments				
+				open(FILE, ">>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
+				print FILE $comTitle.'"'.$author.'"'.$comContent.'"'.$date.'"'.$fileNum.'"'.$anchor.'"'.$postTitle."'"; 
+				close FILE;
+				print redirect ("$ENV{SCRIPT_URI}?viewDetailed=$fileNum#$anchor");			
+			}
+			
+			else {
+				#print comment as html
+				print '<br /><b>Preview:</b> <a id="anchor" name="preview"></a><b>'.$comTitle.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />'.$comContent; 
+			
+			}
 		}
 	}
+
+		# Add comment form
+		# 100613 added sc0ttmans UTF-8 fix
+		$comContent=r('comContent');
+		print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
+		<form accept-charset="UTF-8" name="submitform" method="post" action="'.$ENV{SCRIPT_URL}.'#preview">
+		<table> <tr>
+		<td>'.$locale{$lang}->{title}.'</td>
+		<td><input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></td>
+		</tr>';
+		#bbcode buttons on comment form (or not)
+		if ($config_bbCodeOnCommentaries == 1)
+		{
+			bbcodeComments();
+		}
+		else
+		{
+			print'<tr><td>&nbsp;</td>';
+		}
+		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td>
+		</tr><tr><td>
+		<input name="process" value="doComment" type="hidden" id="process">
+		<input name="viewDetailed" value="'.$fileNum.'" type="hidden" id="viewDetailed">
+		<input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle"></td>
+		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'"></td>
+		</tr></table></form>';
+		}
 }
 
 elsif(r('deleteComment') ne '')
