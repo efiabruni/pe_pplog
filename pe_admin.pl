@@ -410,9 +410,9 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 	my $i = 0;
 	my $tempContent;
 	my @comments; #
-	my $postTitle = r('postTitle');
-	my $comTitle = r('comTitle');
-	my $author = $config_commentsForbiddenAuthors[0]; 
+	my $postTitle = apo_r(r('postTitle'));
+	my $comTitle = apo_r(r('comTitle'));
+	my $author = apo_r($config_commentsForbiddenAuthors[0]); 
 	my $comContent =bbcode(r('comContent')); # the ' was giving problems with displying it, now it gets encoded, thanks to Jamesbond for the solution
 	my $date = getdate($config_gmt);
 	my $anchor = strftime "%Y%m%d%H%M%S", localtime; #sc0ttman added the anchor

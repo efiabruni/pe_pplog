@@ -15,6 +15,12 @@ sub basic_r
 	param($_[0]);
 }
 
+sub apo_r
+{
+	$_ = $_[0];
+	s/'/&apos;/gi;
+	return $_;
+}
 #Bbcode to html
 sub bbcode
 {

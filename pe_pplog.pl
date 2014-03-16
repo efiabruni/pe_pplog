@@ -276,313 +276,233 @@ elsif(r('do') eq 'search')
 {
 	doSearch(); 
 }
-elsif (r('Submit') eq $locale{$lang}->{preview})
-{
-	my $title = r('title');
-	my $author = r('author');
-	my $content = r('content');
-	my $postTitle = r('postTitle');
-	my $fileName = r('sendComment');
-	my $date = getdate($config_gmt);
-	my $originalCode =r('originalCode');
-	my $code = r('code');
-	my $question = r('question');
-	my $pass = r('pass');
-	
-	print '<b>'.$title.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />';
-	print bbcode($content); 
-	
-	print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
-			<form accept-charset="UTF-8" name="submitform" method="post">
-			<table>
-			<tr>
-			<td>'.$locale{$lang}->{title}.'</td>
-			<td><input name="title" type="text" id="title" value="'.$title.'"></td>
-			</tr>
-			<tr>
-			<td>'.$locale{$lang}->{author}.'</td>
-			<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-			</tr>';
-		
-		#bbcode buttons if allowed
-		if ($config_bbCodeOnCommentaries == 1)
-		{
-			bbcodeComments();
-		}
-		else
-		{
-		print'<tr><td>&nbsp;</td>';
-		}
-	print '<td><textarea name="content" id="content" cols="50" rows="10">'.$content.'</textarea></td>
-			</tr>';
-			
-			if($config_commentsSecurityCode == 1)
-			{
-
-				print '<tr><td>'.$locale{$lang}->{code}.'</td>
-				<td>'.$originalCode.'<input name="originalCode" value="'.$originalCode.'" type="hidden" id="originalCode"></td>
-				</tr><tr>
-				<td></td>
-				<td><input name="code" type="text" id="code" value="'.$code.'"></td>
-				</tr>';
-			}
-			
-			print '<tr>
-			<td>'.$config_commentsSecurityQuestion.'</td>
-			<td><input name="question" type="text" id="question" value="'.$question.'"></td>
-			</tr>
-			<tr>' if $config_securityQuestionOnComments == 1;
-			
-			print '<tr>
-			<td>'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></td>
-			<td><input name="pass" type="password" id="pass" value="'.$pass.'"></td>
-			</tr>
-			<tr>
-			<td><input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle">
-			<input name="sendComment" value="'.$fileName.'" type="hidden" id="sendComment"></td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
-			</td>
-			</tr>
-			</table>
-			</form>';
-}
 
 #view detailed and send comment
-elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
+elsif(r('viewDetailed') ne '')
 {	
 	my $fileName = r('viewDetailed');
 	my $do = 1;
-	my $content;
-	
-	if(r('sendComment') ne '')
-	{
-	# Send Comment Process
-	
-	   $fileName = r('sendComment');
-	my $posttitle = r('postTitle'); 
-	my $title = r('title');
-	my $author = r('author');
-	   $content = bbcode(r('content'));
-	my $pass = r('pass');
-	my $date = getdate($config_gmt);
-	my $anchor = strftime "%Y%m%d%H%M%S", localtime; #sc0ttman anchor
-	my $triedAsAdmin = 0;
-	
-	if($title eq '' || $author eq '' || $content eq '' || $pass eq '')
-	{
-		print '<br />'.$locale{$lang}->{necessary};
-		$do = 0;
-	}
-	 #check captcha if indicated
-	if($config_commentsSecurityCode == 1)
-	{
-		my $code = r('code');
-		my $originalCode = r('originalCode');
-		
-		unless($code eq $originalCode)
-		{
-			print '<br />'.$locale{$lang}->{captcha};
-			$do = 0;
-		}
-	}
-	#check security question if indicated
-	if($config_securityQuestionOnComments == 1)
-	{
-		my $question = r('question');
-		unless(lc($question) eq lc($config_commentsSecurityAnswer))
-		{
-			print '<br />'.$locale{$lang}->{question};
-			$do = 0;
-		}
-	}
-	
-	my $hasPosted = 0;					# This is to see if the user has posted already, so we add him/her to the database :]
-	
-	foreach(@config_commentsForbiddenAuthors)
-	{
-		if($_ eq $author)
-		{
-			unless($pass eq $config_adminPass)		# Prevent users from using nicks like "admin"
-			{
-				$do = 0;
-				print '<br />'.$locale{$lang}->{compass};
-			}
-			# Efia admin used to be added to the database
-			$hasPosted = 1;
-			$triedAsAdmin = 1;
-		}
-	}
-	
-	# Start of author checking, for identity security
-	open(FILE, "<$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
-	my $data = '';
-	while(<FILE>)
-	{
-		$data.=$_;
-	}
-	close(FILE);
-	
-	if($triedAsAdmin == 0)
-	{
-		my @users = split(/"/, $data);
-		foreach(@users)
-		{
-			my @data = split(/'/, $_);
-			if($author eq $data[0])
-			{
-				$hasPosted = 1;
-				if(crypt($pass, $config_randomString) ne $data[1])
-				{
-					$do = 0;
-					print '<br />'.$locale{$lang}->{compass};
-				}
-				last;
-			}
-		}
-	}
-	
-	if($hasPosted == 0)
-	{
-		open(FILE, ">>$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
-		print FILE $author."'".crypt($pass, $config_randomString).'"';#encrypt password
-		close FILE;
-		print '<br />'.$locale{$lang}->{newuser};
-	}
-	# End of author checking, start adding comment
-	
-	#check if the comment already exists
-	open (FILE, "<$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
-	while (<FILE>){
-		my $check=$title.'"'.$author.'"'.$content.'"';
-		if ($_=~ /$check/){
-			print '<br />'.$locale{$lang}->{comtwice};
-			$do=0;
-		}
-	}
-	close FILE;
-	if($do == 1)
-	{	
+	my $tempContent;
 
-			if(length($content) > $config_commentsMaxLenght)
-			{
-				print '<br />'.$locale{$lang}->{toolong1}.$config_commentsMaxLenght.$locale{$lang}->{toolong2}.length($content);
-			}
-			else
-			{
-	           my $comment = $title.'"'.$author.'"'.$content.'"'.$date.'"'.$fileName.'"'.$anchor.'"'.$posttitle."'";; #sc0ttman 
-				
-				# Add comment
-				open(FILE, ">>$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
-				print FILE $comment;
-				close FILE;
-				
-				# Add comment number to a file with latest comments				
-				open(FILE, ">>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
-				print FILE $comment;
-				close FILE;
-				
-				print '</br>'.$locale{$lang}->{commentadd}.$author.'! <a href="?viewDetailed='.$fileName.'#'.$anchor.'">View Comment</a>';
-				
-				# If Comment Send Mail is active
-				if($config_sendMailWithNewComment == 1)
-				{
-					open (MAIL,"|$config_sendMailWithNewCommentMail[0]");
-					print MAIL "To: $config_sendMailWithNewCommentMail[1] \n";
-					print MAIL "From: PPLOG \n";
-					print MAIL "Subject: $locale{$lang}->{subject}\n\n";
-					print MAIL "$locale{$lang}->{mail} $author \n $title \n $content";
-					close(MAIL);
-				}
-		}
-	}
-}
-
-	# Display Individual Entry
-	$do = 1;
-	
+# Display Individual Entry 
 	unless(-e "$config_postsDatabaseFolder/$fileName.$config_dbFilesExtension")
 	{
 		print '</br>'.$locale{$lang}->{noentry};
-		$do = 0;
+		last;
 	}
-	
-	# First Display Entry
-	if($do == 1)		# Checks if the file exists before doing all this
+ 
+# First Display Entry
+	open(FILE, "<$config_postsDatabaseFolder/$fileName.$config_dbFilesExtension");
+	while(<FILE>)
 	{
-		my $tempContent;
-		open(FILE, "<$config_postsDatabaseFolder/$fileName.$config_dbFilesExtension");
-		while(<FILE>)
+		$tempContent.=$_;
+	}
+	close FILE;
+
+	my @entry = split(/¬/, $tempContent);
+	my @categories = split (/'/, $entry[3]);
+
+	#display the entry
+	print '<h1><a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a></h1>'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
+	for (0..$#categories){
+		print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
+	}
+	print '</footer><br /><br />';
+ 
+	# Now Display Comments
+	unless(-d $config_commentsDatabaseFolder)	# Does the comments folder exists? We will save comments there...
+	{
+		mkdir($config_commentsDatabaseFolder, 0755);
+	}
+ 
+	undef $tempContent;
+	open(FILE, "<$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
+	while(<FILE>)
+	{
+		$tempContent.=$_;
+	}
+	close FILE;
+ 
+	if($tempContent eq '')
+	{
+		print $locale{$lang}->{nocomments};
+	}
+	else
+	{
+		print '<h1>'.$locale{$lang}->{comments}.':</h1>';
+ 
+		my @comments = split(/'/, $tempContent);
+		@comments = reverse(@comments); # newest first by default
+		
+		my $i = 0;
+
+		foreach(@comments)
+		{
+			my @comment = split(/"/, $_);
+			# $title = $comment[0]; $author = $comment[1]; $content = $comment[2]; $date = $comment[3]; $anchor = $comment[5];
+			#sc0ttman anchor for comments
+			print '<a id="anchor" name="'.$comment[5].'"></a><b>'.$comment[0].'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$comment[3].'</b> '.$locale{$lang}->{by}.' <b>'.$comment[1].'</b><br />'; #020313
+			print $comment[2];
+			print '<br /><br />';
+		}
+	}
+	if($config_allowComments == 1)
+	{
+	my $postTitle = apo_r(r('postTitle'));
+	my $comTitle = apo_r(r('comTitle'));
+	my $author = apo_r(r('author'));
+	my $comContent = bbcode(r('comContent'));
+	my $pass = r('pass');
+	my $question = r('question');
+	my $date = getdate($config_gmt);
+	my $anchor = strftime "%Y%m%d%H%M%S", localtime; #sc0ttman anchor
+	my $triedAsAdmin = 0;
+	my $check=$comTitle.'"'.$author.'"'.$comContent.'"';
+
+			
+	if(r('process') eq 'doComment')
+	{
+		# Send Comment Process
+		open (FILE, "<$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
+		while (<FILE>)
 		{
 			$tempContent.=$_;
 		}
 		close FILE;
-		my @entry = split(/¬/, $tempContent);
-		my @categories = split (/'/, $entry[3]);
-		my $postTitle = $entry[0];
-
-		#display the entry
-		print '<h1><a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a></h1>'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
-		for (0..$#categories){
-					print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';  
-				} 
-		print '</footer><br /><br />';  
-		
-		# Now Display Comments
-		unless(-d $config_commentsDatabaseFolder)		# Does the comments folder exists? We will save comments there...
-		{
-			mkdir($config_commentsDatabaseFolder, 0755);
-		}
-	
-		my $content = '';
-		open(FILE, "<$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
-		while(<FILE>)
-		{
-			$content.=$_;
-		}
-		close FILE;
-		
-		if($content eq '')
-		{
-			print $locale{$lang}->{nocomments};
-		}
-		else
-		{
-			print '<h1>'.$locale{$lang}->{comments}.':</h1>';
 			
-			my @comments = split(/'/, $content);
+		#check if the comment already exists
+		if ($tempContent=~ /$check/)
+		{
+			print '<br /><a id="anchor" name="preview">'.$locale{$lang}->{comtwice};
+		}
+		
+		elsif(length($comContent) > $config_commentsMaxLenght)
+		{
+		print '<br /><a id="anchor" name="preview">'.$locale{$lang}->{toolong1}.$config_commentsMaxLenght.$locale{$lang}->{toolong2}.length($comContent);
+		}
+		
+		else{
+			if (r('Submit') eq $locale{$lang}->{preview}){
+				#print comment preview as html
+				print '<br /><b>Preview:</b> <a id="anchor" name="preview"></a><b>'.$comTitle.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />'.$comContent; 
 				
-		
-			@comments = reverse(@comments); # newest first by default
-		
-	
-			my $i = 0;
-			foreach(@comments)
+			}
+			
+			else 
 			{
-				my @comment = split(/"/, $_);
-				# $title = $comment[0]; $author = $comment[1]; $content = $comment[2]; $date = $comment[3]; $anchor = $comment[5]; 
-				#sc0ttman anchor for comments
-                print '<a id="anchor" name="'.$comment[5].'"></a><b>'.$comment[0].'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$comment[3].'</b> '.$locale{$lang}->{by}.' <b>'.$comment[1].'</b><br />'; #020313 
-				print $comment[2];
 				
-				print '<br /><br />';
+				my $code = r('code');
+				my $originalCode = r('originalCode');
+				my $hasPosted = 0;	# This is to see if the user has posted already, so we add him/her to the database :]
+				
+				if($comTitle eq '' || $author eq '' || $comContent eq '' || $pass eq '')
+				{
+					print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{necessary};
+				}
+
+				#check captcha if indicated
+				elsif($config_commentsSecurityCode == 1 && $code ne $originalCode)
+				{
+					print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{captcha};
+				}
+				
+				#check security question if indicated
+				elsif($config_securityQuestionOnComments == 1 && lc($question) ne lc($config_commentsSecurityAnswer))
+				{
+					print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{question};
+				}
+				
+				else
+				{	# Start of author checking, for identity security
+					if (grep{$_ eq $author} @config_commentsForbiddenAuthors){
+					if($pass ne $config_adminPass)
+					{
+						$do=0;
+					}
+				}
+				
+				else{	
+					undef $tempContent;
+					open(FILE, "<$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
+					while(<FILE>)
+					{
+						$tempContent.=$_;
+					}
+					close(FILE);
+					my @users = split(/"/, $tempContent);
+					#this is not particularly elegant
+					foreach(@users)
+					{
+						my @data = split(/'/, $_);
+						if($author eq $data[0])
+						{
+							$hasPosted = 1;
+							if(crypt($pass, $config_randomString) ne $data[1])
+							{
+								$do = 0;
+							}
+							last;	
+						}
+					}
+					
+					if($hasPosted == 0)
+					{
+						open(FILE, ">>$config_commentsDatabaseFolder/users.$config_dbFilesExtension.dat");
+						print FILE $author."'".crypt($pass, $config_randomString).'"';#encrypt password
+						close FILE;
+						print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{newuser};
+					}
+				}
+				
+				# End of author checking, start adding comment
+				if($do == 1)
+				{	
+					my $comment = $comTitle.'"'.$author.'"'.$comContent.'"'.$date.'"'.$fileName.'"'.$anchor.'"'.$postTitle."'"; #sc0ttman
+					# Add comment
+					open(FILE, ">>$config_commentsDatabaseFolder/$fileName.$config_dbFilesExtension");
+					print FILE $comment;
+					close FILE;
+					# Add comment number to a file with latest comments
+					open(FILE, ">>$config_commentsDatabaseFolder/latest.$config_dbFilesExtension");
+					print FILE $comment;
+					close FILE;
+					
+					# If Comment Send Mail is active
+					if($config_sendMailWithNewComment == 1)
+					{
+						open (MAIL,"|$config_sendMailWithNewCommentMail[0]");
+						print MAIL "To: $config_sendMailWithNewCommentMail[1] \n";
+						print MAIL "From: PPLOG \n";
+						print MAIL "Subject: $locale{$lang}->{subject}\n\n";
+						print MAIL "$locale{$lang}->{mail} $author \n $title \n $content";
+						close(MAIL);
+							
+					}
+					print "<meta http-equiv='refresh' content='1;url=$ENV{SCRIPT_URI}?viewDetailed=$fileName#$anchor'>";	
+				}
+				else 
+				{
+					print '<br /><a id="anchor" name="preview"></a>'.$locale{$lang}->{compass};
+				}
 			}
 		}
-		# Add comment form
-		if($config_allowComments == 1)
-		{
-			# 100613 added sc0ttmans UTF-8 fix
-			print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
-			<form accept-charset="UTF-8" name="submitform" method="post">
-			<table>
-			<tr>
-			<td>'.$locale{$lang}->{title}.'</td>
-			<td><input name="title" type="text" id="title"></td>
-			</tr>
-			<tr>
-			<td>'.$locale{$lang}->{author}.'</td>
-			<td><input name="author" type="text" id="author"></td>
-			</tr>';
 		
+	}
+}		
+ 
+	# Add comment form
+
+		# 100613 added sc0ttmans UTF-8 fix
+		print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
+		<form accept-charset="UTF-8" name="submitform" method="post" action="'.$ENV{SCRIPT_URL}.'#preview">
+		<table><tr>
+		<td>'.$locale{$lang}->{title}.'</td>
+		<td><input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></td>
+		</tr><tr>
+		<td>'.$locale{$lang}->{author}.'</td>
+		<td><input name="author" type="text" id="author" value="'.$author.'"></td>
+		</tr>';
+ 
 		#bbcode buttons if allowed
 		if ($config_bbCodeOnCommentaries == 1)
 		{
@@ -590,49 +510,38 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 		}
 		else
 		{
-		print'<tr><td>&nbsp;</td>';
+			print'<tr><td>&nbsp;</td>';
 		}
-	print '<td><textarea name="content" id="content" cols="50" rows="10"></textarea></td>
-			</tr>';
+		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td></tr>';
+ 
+		if($config_commentsSecurityCode == 1)
+		{
+			my $SecurityCode = uc(substr(crypt(rand(999999), $config_randomString),1,8));
+			$SecurityCode=~ s/\.//;
+			$SecurityCode =~ s/\///;
 			
-			if($config_commentsSecurityCode == 1)
-			{
-				my $code = '';
-	
-				$code = uc(substr(crypt(rand(999999), $config_randomString),1,8));
-	
-				$code =~ s/\.//;
-				$code =~ s/\///;
-				print '<tr><td>'.$locale{$lang}->{code}.'</td>
-				<td>'.$code.'<input name="originalCode" value="'.$code.'" type="hidden" id="originalCode"></td>
-				</tr>
-				<tr>
-				<td></td>
-				<td><input name="code" type="text" id="code"></td>
-				</tr>';
-			}
-			
-			print '<tr>
-			<td>'.$config_commentsSecurityQuestion.'</td>
-			<td><input name="question" type="text" id="question"></td>
-			</tr>
-			<tr>' if $config_securityQuestionOnComments == 1;
-			
-			print '<tr>
-			<td>'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></td>
-			<td><input name="pass" type="password" id="pass"></td>
-			</tr>
-			<tr>
-			<td><input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle">
-			<input name="sendComment" value="'.$fileName.'" type="hidden" id="sendComment">
-			</td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'">
-			<input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
-			</td>
-			</tr>
-			</table>
-			</form>';
+			print '<tr><td>'.$locale{$lang}->{code}.'</td>
+			<td>'.$SecurityCode.'<input name="originalCode" value="'.$SecurityCode.'" type="hidden" id="originalCode"></td>
+			</tr><tr><td></td>
+			<td><input name="code" type="text" id="code"></td></tr>';
 		}
+		
+		print '<tr>
+		<td>'.$config_commentsSecurityQuestion.'</td>
+		<td><input name="question" type="text" id="question" value="'.$question.'"></td>
+		</tr><tr>' if $config_securityQuestionOnComments == 1;
+ 
+		print '<tr>
+		<td>'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></td>
+		<td><input name="pass" type="password" id="pass" value="'.$pass.'"></td>
+		</tr><tr>
+		<td><input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle">
+		<input name="process" value="doComment" type="hidden" id="process">
+		<input name="viewDetailed" value="'.$fileName.'" type="hidden" id="viewDetailed">
+		</td><td>
+		<input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'">
+		<input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
+		</td></tr></table></form>';
 	}
 }
 
