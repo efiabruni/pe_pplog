@@ -129,22 +129,24 @@ sub bbcodeComments #Buttons for comments
 			<input  type="button" style="font-weight:bold" onClick="surroundText(\'{b}\', \'{/b}\', document.forms.submitform.comContent); return false;" value="b" />
 			<input  type="button" style="font-style:italic" onClick="surroundText(\'{i}\', \'{/i}\', document.forms.submitform.comContent); return false;" value="i" />
 			<input  type="button" style="text-decoration:underline" onClick="surroundText(\'{u}\', \'{/u}\', document.forms.submitform.comContent); return false;" value="u" />
-			<input type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.comContent); return false;" value="style" title="'.$locale{$lang}->{style}.'" />
+			<input  type="button" style="color:red" onClick="surroundText(\'{style=text-align:;color:}\', \'{/style}\', document.forms.submitform.comContent); return false;" value="style" title="'.$locale{$lang}->{style}.'"/>
 			</td></tr>
 			<tr class="screen"><td>&nbsp;</td><td>
-			<input type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.comContent); return false;" value=" &#8226 li" title="'.$locale{$lang}->{list}.'" />
-			<input type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.comContent); return false;" value="&#34/.&#34" title="'.$locale{$lang}->{quote}.'" />
-			<input type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.comContent); return false;" value="http://" title="'.$locale{$lang}->{http}.'" />
-            <input type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.comContent); return false;" value="img" title="'.$locale{$lang}->{img}.'" />
-			 </tr><td>';
+			<input  type="button" onClick="surroundText(\'{*}\', \'{/*}\', document.forms.submitform.comContent); return false;" value=" &#8226 li" title="'.$locale{$lang}->{list}.'" />
+			<input  type="button" onClick="surroundText(\'{qcode}\', \'{/qcode}\', document.forms.submitform.comContent); return false;" value="&#34/.&#34" title="'.$locale{$lang}->{quote}.'" />
+			<input  type="button" onClick="surroundText(\'{url}\', \'{/url}\', document.forms.submitform.comContent); return false;" value="http://" title="'.$locale{$lang}->{http}.'" />
+            <input  type="button" onClick="surroundText(\'{img}\', \'{/img}\', document.forms.submitform.comContent); return false;" value="img" title="'.$locale{$lang}->{img}.'" />
+            </tr><tr><td>';
         while ($_ = readdir (SM)){
 		foreach ($_){
 			my $name = $_;
 			$name =~s/(.+?).(jpg|jpeg|png|gif)/$1/gi;
-				print '<input type="image" onClick="surroundText(\'{'.$name.'/}\', \'\', document.forms.submitform.content); return false;" src="'.$config_smiliesFolder.'/'.$_.'" title="'.$name.'"/>' if $_ =~ /(jpg|jpeg|png|gif)$/i;
+				print '<input class="screen" type="image" onClick="surroundText(\'{'.$name.'/}\', \'\', document.forms.submitform.comContent); return false;" src="'.$config_smiliesFolder.'/'.$_.'" title="'.$name.'" />' if $_ =~ /(jpg|jpeg|png|gif)$/i;
 			}
 		}	
 		closedir SM;
+			#<input  type="button" onClick="surroundText(\'{\', \'/}\', document.forms.submitform.content); return false;" value=":-)"/>
+			print '</td>';
 }
 
 sub getIP #return ip in standard format
