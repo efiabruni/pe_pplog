@@ -117,7 +117,6 @@ sub bbcodeButtons #Buttons for entry and edit
 			}
 		}	
 		closedir SM;
-			#<input  type="button" onClick="surroundText(\'{\', \'/}\', document.forms.submitform.content); return false;" value=":-)"/>
 			print '<br /><input type=image alt="'.$locale{$lang}->{bbcode}.'"><div class=box /><iframe src=?BbcodeHelp=help#content target="_blank" width=650px height=90%></iframe></div></td>';
 
 }
