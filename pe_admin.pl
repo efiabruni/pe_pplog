@@ -96,20 +96,29 @@ print $config_customHTMLadmin.
 '<link href='.$config_currentStyleFolder.'/'.$config_currentStyleSheet.' rel=stylesheet type=text/css media="Screen, print">
 <link href='.$config_currentStyleFolder.'/mobile.css rel=stylesheet type=text/css media="only screen and (max-width: 550px), only screen and (max-device-width: 480px)">
 </head>
-<body><header><div id="header"><a href="?do=log_out">'.$locale{$lang}->{log_out}.'</a><a href="/pe_pplog/pe_pplog.pl"> Blog</a></div>
+<body><header>
 <a href=?page=1 style="text-decoration:none;"><h1 id="header">'.$locale{$lang}->{header}.'</h1></a><a id="mobile" href="#">'.$locale{$lang}->{menu}.'</a>
-<div id="header"><a href=?page=1>'.$locale{$lang}->{index}.'</a>
-<a href=?do=newEntry>'.$locale{$lang}->{new}.'</a>';
+<div id="header"><ul class="menu"><li><a href=?page=1>'.$locale{$lang}->{index}.'</a></li></ul>
+<ul class="menu"><li><a href=?do=newEntry>'.$locale{$lang}->{new}.'</a></li></ul>';
 #menu bar 5.06.13; plugins menu entries
-foreach(@config_pluginsAdmin)
-{
-	print '<a href="?do='.$_.'">'.$locale{$lang}->{$_}.'</a>'; #16.05
+if(scalar(@config_pluginsAdmin)>0){
+	print'<ul class="menu"><li><a class="menu" href="#">'.$locale{$lang}->{plug}.' »</a><ul class="drop">';
+	
+	foreach(@config_pluginsAdmin)
+	{
+		print '<li><a href="?do='.$_.'">'.$locale{$lang}->{$_}.'</a></li>'; #16.05
+	}
+	print'</ul></li></ul>';
 }
-# 100613 added sc0ttmans UTF-8 fix
-print '<a href="?do=listPag">'.$locale{$lang}->{listPag}.'</a>
-<a href=?do=archive>'.$locale{$lang}->{archive}.'</a>';
+#Pages
+my @pages = getPages();
+if(scalar(@pages) > 0){
+print '<ul class="menu"><li><a href="?do=listPag">'.$locale{$lang}->{listPag}.'</a></li></ul>';
+}
+print'<ul class="menu"><li><a href=?do=archive>'.$locale{$lang}->{archive}.'</a></li></ul>';
 menuMobileSearch();
-print '</div></header><nav>';
+print'<ul class="menu"><li><a href=?do=log_out>Log out</a></li></ul> 
+</div></header><nav>';
 
 menuSearch();#search
 menuEntries();#entries
