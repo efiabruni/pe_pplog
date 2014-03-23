@@ -136,106 +136,7 @@ if(scalar(@pages) > 0)
 print '<ul class="menu"><li><a href=?do=archive>'.$locale{$lang}->{archive}.'</a></li></ul>';
 menuMobileSearch();
 print '<ul class="menu"><li><a href="?do=RSS">'.$locale{$lang}->{rss}.'</a></li></ul></div></header>
-<nav>'
-#THIS IS THE SIDEBAR MENU 
-#Custom html in menu top
-.$config_customMenuHTMLtop;
-
-menuSearch();#search
-menuCategories();# Show Categories on Menu
-menuEntries();	# Show Entries in Menu
-
-if($config_showLatestComments == 1)
-{
-	menuComments(); # Latest comments on the menu
-}
-
-print $config_customMenuHTMLbottom; # Display Custom HTML in the bottom of menu
-
-# Show Some Links Defined on the Configuration
-if(@config_menuLinks > 0)
-{
-	print '<h1>'.$locale{$lang}->{links}.'</h1>';
-	foreach(@config_menuLinks)
-	{
-		my @link = split(/,/, $_);
-		print '<a href="'.$link[0].'">'.$link[1].'</a>';
-	}
-}
-#Site statistics
-if(($config_showUsersOnline == 1) || ($config_showHits == 1))
-{
-	print '<h1>'.$locale{$lang}->{stats}.'</h1>';
-}
-
-if($config_showUsersOnline == 1)
-{
-	# Show users online
-	
-	my $remote = getIP();
-	my $timestamp = time();
-	my $timeout = ($timestamp-$config_usersOnlineTimeout);
-	
-	if((-s "$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo") > (1024*5))		# If its bigger than 0.5 MB, truncate the file and start again
-	{
-		open(FILE, "+>$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
-	}
-	else
-	{
-		open(FILE, ">>$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
-	}
-	
-	print FILE $remote."||".$timestamp."\n";
-	close FILE;
-	my @online_array = ();
-	my $content;
-	open(FILE, "<$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
-	while(<FILE>)
-	{
-		$content.=$_;
-	}
-	close FILE;
-	
-	my @l = split(/\n/, $content);
-	foreach(@l)
-	{
-		my @f = split(/\|\|/, $_);
-		my $ip = $f[0];
-		my $time = $f[1];
-		if($time >= $timeout)
-		{
-			push(@online_array, $ip);
-		}
-	}
-	@online_array = array_unique(@online_array);
-	print $locale{$lang}->{users}.scalar(@online_array).'<br />';
-}
-
-if($config_showHits == 1)
-{
-	# Display Hits
-	
-	# Check hits
-	open(FILE, "<$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
-	my $content;
-	while(<FILE>)
-	{
-		$content.=$_;
-	}
-	close FILE;
-			
-	# Add hits
-	open(FILE, ">$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
-	print FILE ++$content;
-	close FILE;
-	
-	print ''.$locale{$lang}->{hits}.$content;
-}
-
-print '</nav>';
-
-#content
-print '<div id="content">';
+<div id="content">';#content
 
 #end here for banned people
 foreach(@config_ipBan)
@@ -591,7 +492,103 @@ else
 	doPages($do, $part, @entries);
 }
 #footer
-print '</div><footer id="footer">'.$config_blogFooter.'</footer></div></body></html>';
+print '</div><nav>'
+#THIS IS THE SIDEBAR MENU 
+#Custom html in menu top
+.$config_customMenuHTMLtop;
+
+menuSearch();#search
+menuCategories();# Show Categories on Menu
+menuEntries();	# Show Entries in Menu
+
+if($config_showLatestComments == 1)
+{
+	menuComments(); # Latest comments on the menu
+}
+
+print $config_customMenuHTMLbottom; # Display Custom HTML in the bottom of menu
+
+# Show Some Links Defined on the Configuration
+if(@config_menuLinks > 0)
+{
+	print '<h1>'.$locale{$lang}->{links}.'</h1>';
+	foreach(@config_menuLinks)
+	{
+		my @link = split(/,/, $_);
+		print '<a href="'.$link[0].'">'.$link[1].'</a>';
+	}
+}
+#Site statistics
+if(($config_showUsersOnline == 1) || ($config_showHits == 1))
+{
+	print '<h1>'.$locale{$lang}->{stats}.'</h1>';
+}
+
+if($config_showUsersOnline == 1)
+{
+	# Show users online
+	
+	my $remote = getIP();
+	my $timestamp = time();
+	my $timeout = ($timestamp-$config_usersOnlineTimeout);
+	
+	if((-s "$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo") > (1024*5))		# If its bigger than 0.5 MB, truncate the file and start again
+	{
+		open(FILE, "+>$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
+	}
+	else
+	{
+		open(FILE, ">>$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
+	}
+	
+	print FILE $remote."||".$timestamp."\n";
+	close FILE;
+	my @online_array = ();
+	my $content;
+	open(FILE, "<$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
+	while(<FILE>)
+	{
+		$content.=$_;
+	}
+	close FILE;
+	
+	my @l = split(/\n/, $content);
+	foreach(@l)
+	{
+		my @f = split(/\|\|/, $_);
+		my $ip = $f[0];
+		my $time = $f[1];
+		if($time >= $timeout)
+		{
+			push(@online_array, $ip);
+		}
+	}
+	@online_array = array_unique(@online_array);
+	print $locale{$lang}->{users}.scalar(@online_array).'<br />';
+}
+
+if($config_showHits == 1)
+{
+	# Display Hits
+	
+	# Check hits
+	open(FILE, "<$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
+	my $content;
+	while(<FILE>)
+	{
+		$content.=$_;
+	}
+	close FILE;
+			
+	# Add hits
+	open(FILE, ">$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
+	print FILE ++$content;
+	close FILE;
+	
+	print ''.$locale{$lang}->{hits}.$content;
+}
+
+print '</nav><footer id="footer">'.$config_blogFooter.'</footer></body></html>';
 }
 #done!
 

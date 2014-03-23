@@ -118,60 +118,7 @@ print '<ul class="menu"><li><a href="?do=listPag">'.$locale{$lang}->{listPag}.'<
 print'<ul class="menu"><li><a href=?do=archive>'.$locale{$lang}->{archive}.'</a></li></ul>';
 menuMobileSearch();
 print'<ul class="menu"><li><a href=?do=log_out>Log out</a></li></ul> 
-</div></header><nav>';
-
-menuSearch();#search
-menuEntries();#entries
-menuCategories();#Categories 
-
-# Latest comments on the menu 
-if($config_showLatestComments == 1)
-{
-	menuComments();
-}
-
-if(($config_showUsersOnline == 1) || ($config_showHits == 1)) #show stats for the main blog
-{
-	print '<h1>'.$locale{$lang}->{stats}.'</h1>';
-}
-if($config_showUsersOnline == 1) #show users online 
-{
-	my $timestamp = time();
-	my $timeout = ($timestamp-$config_usersOnlineTimeout);
-	my @online_array = ();
-	my $content;
-	open(FILE, "<$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
-	while(<FILE>)
-	{
-		$content.=$_;
-	}
-	close FILE;
-	
-	my @l = split(/\n/, $content);
-	foreach(@l)
-	{
-		my @f = split(/\|\|/, $_);
-		my $ip = $f[0];
-		my $time = $f[1];
-		if($time >= $timeout)
-		{
-			push(@online_array, $ip);
-		}
-	}
-	@online_array = array_unique(@online_array);
-	print $locale{$lang}->{users}.scalar(@online_array).' <br />';
-}
-if($config_showHits == 1) #show hits
-{
-	open(FILE, "<$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
-	while(<FILE>)
-	{
-		print $locale{$lang}->{hits}.$_;
-	}
-	close FILE;
-}
-
-print '</nav><div id="content">';#content
+</div></header><div id="content">';#content
 
 #logout message
 if (r('do')eq 'log_out'){
@@ -897,5 +844,58 @@ else
 	doNewEntry();
 }
 			
-print '</div></body></html>';
+print '</div><nav>';
+
+menuSearch();#search
+menuEntries();#entries
+menuCategories();#Categories 
+
+# Latest comments on the menu 
+if($config_showLatestComments == 1)
+{
+	menuComments();
+}
+
+if(($config_showUsersOnline == 1) || ($config_showHits == 1)) #show stats for the main blog
+{
+	print '<h1>'.$locale{$lang}->{stats}.'</h1>';
+}
+if($config_showUsersOnline == 1) #show users online 
+{
+	my $timestamp = time();
+	my $timeout = ($timestamp-$config_usersOnlineTimeout);
+	my @online_array = ();
+	my $content;
+	open(FILE, "<$config_postsDatabaseFolder/online.$config_dbFilesExtension.uo");
+	while(<FILE>)
+	{
+		$content.=$_;
+	}
+	close FILE;
+	
+	my @l = split(/\n/, $content);
+	foreach(@l)
+	{
+		my @f = split(/\|\|/, $_);
+		my $ip = $f[0];
+		my $time = $f[1];
+		if($time >= $timeout)
+		{
+			push(@online_array, $ip);
+		}
+	}
+	@online_array = array_unique(@online_array);
+	print $locale{$lang}->{users}.scalar(@online_array).' <br />';
+}
+if($config_showHits == 1) #show hits
+{
+	open(FILE, "<$config_postsDatabaseFolder/hits.$config_dbFilesExtension.hits");
+	while(<FILE>)
+	{
+		print $locale{$lang}->{hits}.$_;
+	}
+	close FILE;
+}
+
+print '</nav></body></html>';
 #the end
