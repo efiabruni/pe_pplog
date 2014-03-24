@@ -151,76 +151,6 @@ if(r('do') eq 'newEntry')
 	doNewEntry();
 }
 
-elsif(r('process') eq 'newEntry')
-	{
-	# Blog Add New Entry Page
-	
-    #BK 7JUL09 patch from fedekun, fix post with no title that caused zero-byte message...	
-    my $dir = r('dir');
-    my $title = r('title');
-    my $isHTML = r('isHTML');			#Efia HTML checkbox
-    my $category = r('category');
-    my $isPage = r('isPage');
-    if($isHTML == 0)
-        {
-            $content = bbcode(r('content'));
-        }
-        else
-        {
-            $content = basic_r('content');
-        }
- 
-       
-     if($title eq '' || $content eq '' || $category eq '')
-        {
-            die($locale{$lang}->{necessary});
-        }
-       
-     my @files = getFiles($config_DatabaseFolder.$dir);
-     my @lastOne = split(/¬/, $files[0]);
-     my $i = 0;
-       
-         if($lastOne[4] eq '')
-         {
-            $i = sprintf("%05d",0);
-         }
-         else
-         {
-            $i = sprintf("%05d",$lastOne[4]+1);
-         }
-       
-         open(FILE, ">$config_DatabaseFolder$dir/$i.$config_dbFilesExtension");
-       
-         my $date = getdate($config_gmt);
-         print FILE $title.'¬'.$content.'¬'.$date.'¬'.$category.'¬'.$i;    # 0: Title, 1: Content, 2: Date, 3: Category, 4: FileName
-         close FILE;
-       
-         if($isPage == 1)
-         {
-            open(FILE, ">>$config_postsDatabaseFolder/pages.$config_dbFilesExtension.page");
-            print FILE $i.'-';
-            close FILE;
-         }
-      #BK 7JUL09 patch end.
-      my $fileName = "$dir/$i";
-      my $tempContent;
-		open(FILE, "<$config_postsDatabaseFolder/$i.$config_dbFilesExtension");
-		while(<FILE>)
-		{
-			$tempContent.=$_;
-		}
-		close FILE;
-		my @entry = split(/¬/, $tempContent);
-		my @categories = split (/'/, $entry[3]); 
-		
-		print '<h1><a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a></h1><a href="?edit=posts/'.$entry[4].'">'.$locale{$lang}->{e}.'</a> - <a href="?delete=posts/'.$entry[4].'">'.$locale{$lang}->{d}.'</a><br /><br />'.$entry[1].'<br /><br />
-		<footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.':';
-		for (0..$#categories){
-					print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';   
-				} 
-		print '</footer><br /><br />';
-  }
- 
 elsif(r('edit') ne '')
 {
 	# Edit Entry Page
@@ -307,53 +237,6 @@ elsif(r('delete') ne '')
 	</tr>
 	</table>
 	</form>';
-}
-#preview Comments
-elsif (r('Submit') eq $locale{$lang}->{preview})
-{
-	#get all the posted detailes
-	my $title = r('title');
-	my $author = $config_commentsForbiddenAuthors[0]; 
-	my $content = r('content');
-	my $postTitle = r('postTitle');
-	my $fileNum = r('Comment');
-	my $date = getdate($config_gmt);
-	
-	#print comment as html
-	print '<b>'.$title.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />';
-	print bbcode($content); 
-	
-	#print comment form with former entries
-	print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
-			<form accept-charset="UTF-8" name="submitform" method="post">
-			<table>
-			<tr>
-			<td>'.$locale{$lang}->{title}.'</td>
-			<td><input name="title" type="text" id="title" value="'.$title.'"></td>
-			</tr>
-			<tr>
-			<td>'.$locale{$lang}->{author}.'</td>
-			<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-			</tr>';
-		
-		#bbcode buttons if allowed
-		if ($config_bbCodeOnCommentaries == 1)
-		{
-			bbcodeComments();
-		}
-		else
-		{
-		print'<tr><td>&nbsp;</td>';
-		}
-	print '<td><textarea name="content" id="content" cols="50" rows="10">'.$content.'</textarea></td>
-			</tr><tr>
-			<td><input name="postTitle" value="'.$postTitle.'" type="hidden" id="postTitle">
-			<input name="Comment" value="'.$fileNum.'" type="hidden" id="Comment"></td>
-			<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
-			</td>
-			</tr>
-			</table>
-			</form>';
 }
 
 #Display Individual Entry and all processes which end with displaying an entry
@@ -522,8 +405,8 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 		my @entry = split(/¬/, $tempContent);
 		my @categories = split (/'/, $entry[3]);
 	# display the entry
-	print '<h1><a href="?viewDetailed='.$fileName.'">'.$entry[0].'</a></h1><a href="?edit='.$fileName.'">'.$locale{$lang}->{e}.'</a> - <a href="?delete='.$fileName.'">'.$locale{$lang}->{d}.'</a><br /><br />'.$entry[1].'<br /><br />
-	<footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.':';
+	print '<h1>'.$entry[0].'</h1><a href="?edit='.$fileName.'">'.$locale{$lang}->{e}.'</a> - <a href="?delete='.$fileName.'">'.$locale{$lang}->{d}.'</a><br /><br />'.$entry[1].'<br /><br />
+	<footer id="footer">'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.':';
 	for (0..$#categories){
 		print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
 	}

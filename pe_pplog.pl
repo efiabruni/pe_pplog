@@ -204,7 +204,7 @@ elsif(r('viewDetailed') ne '')
 	my @categories = split (/'/, $entry[3]);
 
 	#display the entry
-	print '<h1><a href="?viewDetailed='.$entry[4].'">'.$entry[0].'</a></h1>'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
+	print '<h1>'.$entry[0].'</h1>'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer id="footer">'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
 	for (0..$#categories){
 		print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
 	}

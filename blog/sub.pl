@@ -399,7 +399,7 @@ sub doPages
 			else{
 				#show entries for main blog
 				print '<div class="article"><h1><a href="?viewDetailed='.$finalEntries[4].'">'.$finalEntries[0].'</a></h1><a href="?viewDetailed='.$finalEntries[4].'">'.$commentsLink.' </a> '.$config_customHTMLpost.'</br>
-				'.$finalEntries[1].'<br /><br /><footer>'.$locale{$lang}->{postedon}.' '.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
+				'.$finalEntries[1].'<br /><br /><footer id="footer">'.$locale{$lang}->{postedon}.' '.$finalEntries[2].' - '.$locale{$lang}->{categories}.': ';
 			}
 			for (0..$#categories)
 				{
