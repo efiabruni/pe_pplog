@@ -416,7 +416,7 @@ elsif (r('Submit') eq $locale{$lang}->{preview})
 	my $pass = r('pass');
 	
 	print '<b>'.$title.'</b> &nbsp; '.$locale{$lang}->{postedon}.' <b>'.$date.'</b> '.$locale{$lang}->{by}.' <b>'.$author.'</b><br />';
-	print bbcode($content); 
+	print $content; 
 	
 	print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
 			<form accept-charset="UTF-8" name="submitform" method="post">
@@ -428,16 +428,7 @@ elsif (r('Submit') eq $locale{$lang}->{preview})
 			<tr>
 			<td>'.$locale{$lang}->{author}.'</td>
 			<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-			</tr>';
-		
-		#bbcode buttons if allowed
-		if ($config_bbCodeOnCommentaries == 1)
-		{
-			bbcodeComments();
-		}
-		else
-		{
-		print'<tr><td>&nbsp;</td>';
+			</tr><tr><td>&nbsp;</td>';
 		}
 	print '<td><textarea name="content" id="content" cols="50" rows="10">'.$content.'</textarea></td>
 			</tr>';
@@ -485,10 +476,10 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 	# Send Comment Process
 	
 	   $fileName = r('sendComment');
-	my $posttitle = r('postTitle'); 
-	my $title = r('title');
-	my $author = r('author');
-	   $content = bbcode(r('content'));
+	my $posttitle = apo_r(r('posttitle'));
+	my $title = apo_r(r('title'));
+	my $author = apo_r(r('author'));
+	$content = apo_r(r('content'));
 	my $pass = r('pass');
 	my $date = getdate($config_gmt);
 	my $anchor = strftime "%Y%m%d%H%M%S", localtime; #sc0ttman anchor
@@ -706,18 +697,7 @@ elsif(r('viewDetailed') ne '' || r('sendComment') ne '')
 			<tr>
 			<td>'.$locale{$lang}->{author}.'</td>
 			<td><input name="author" type="text" id="author"></td>
-			</tr>';
-		
-		#bbcode buttons if allowed
-		if ($config_bbCodeOnCommentaries == 1)
-		{
-			bbcodeComments();
-		}
-		else
-		{
-		print'<tr><td>&nbsp;</td>';
-		}
-	print '<td><textarea name="content" id="content" cols="50" rows="10"></textarea></td>
+			</tr><tr><td>&nbsp;</td><td><textarea name="content" id="content" cols="50" rows="10"></textarea></td>
 			</tr>';
 			
 			if($config_commentsSecurityCode == 1)
