@@ -252,7 +252,7 @@ elsif(r('viewDetailed') ne '')
 	my $postTitle = apo_r(r('postTitle'));
 	my $comTitle = apo_r(r('comTitle'));
 	my $author = apo_r(r('author'));
-	my $comContent = bbcode(r('comContent'));
+	my $comContent = apo_r(r('comContent'));
 	my $pass = r('pass');
 	my $question = r('question');
 	my $date = getdate($config_gmt);
@@ -402,17 +402,8 @@ elsif(r('viewDetailed') ne '')
 		</tr><tr>
 		<td>'.$locale{$lang}->{author}.'</td>
 		<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-		</tr>';
- 
-		#bbcode buttons if allowed
-		if ($config_bbCodeOnCommentaries == 1)
-		{
-			bbcodeComments();
-		}
-		else
-		{
-			print'<tr><td>&nbsp;</td>';
-		}
+		</tr>print'<tr><td>&nbsp;</td>';
+		
 		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td></tr>';
  
 		if($config_commentsSecurityCode == 1)
