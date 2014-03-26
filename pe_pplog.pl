@@ -402,7 +402,7 @@ elsif(r('viewDetailed') ne '')
 		</tr><tr>
 		<td>'.$locale{$lang}->{author}.'</td>
 		<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-		</tr>print'<tr><td>&nbsp;</td>';
+		</tr><tr><td>&nbsp;</td>';
 		
 		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td></tr>';
  
