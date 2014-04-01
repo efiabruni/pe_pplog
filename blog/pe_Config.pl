@@ -29,7 +29,7 @@ our $config_entriesOnRSS = 0;													# 0 = ALL ENTRIES, if you want a limit
 
 #Menu options:
 our $config_menuEntriesLimit = 10;												# Limits of entries to show in the menu
-our @config_menuLinks = qw(' http://puppylinux.com/,Puppy_Linux ', ' https://code.google.com/p/pplog/,Pup_pplog ', ' http://pplog.scottjarvis.com/,SJPPlog ', ' http://tine.pagekite.me/blog/,pe_pplog ');
+our %config_menuLinks =('pe_pplog'=>'http://tine.pagekite.me/blog', 'Puppy Linux'=>'http://puppylinux.com', 'Pup_pplog'=>'https://code.google.com/p/pplog/');#External links in the menu
 
 our $config_showLatestComments = 1;												# Show latest comments on the menu
 our $config_showLatestCommentsLimit = 10;										# Show 10 latest comments

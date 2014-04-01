@@ -500,13 +500,12 @@ if($config_showLatestComments == 1)
 print $config_customMenuHTMLbottom; # Display Custom HTML in the bottom of menu
 
 # Show Some Links Defined on the Configuration
-if(@config_menuLinks > 0)
+if(%config_menuLinks > 0)
 {
 	print '<h1>'.$locale{$lang}->{links}.'</h1>';
-	foreach(@config_menuLinks)
+	foreach(keys%config_menuLinks)
 	{
-		my @link = split(/,/, $_);
-		print '<a href="'.$link[0].'">'.$link[1].'</a>';
+		print '<a href="'.$config_menuLinks{$_}.'">'.$_.'</a>';
 	}
 }
 #Site statistics
