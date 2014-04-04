@@ -138,13 +138,13 @@ close FILE;
 #login form
 unless ($cookie eq $value || $log_in eq "logged"){
 	print '<form accept-charset="UTF-8" method="post">
-	<h1>'.$locale{$lang}->{pass}.'</h1><br />
-	<input type="password" name="password">
+	<legend>'.$locale{$lang}->{pass}.'</legend>
+	<p><input type="password" name="password">
 	<input name="process" type="hidden" id="process" value="log_in">
-	<input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{log_in}.'"></form>';
+	<input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{log_in}.'">
+	</p></form>';
 	exit; #stop here if not logged in
 }
-
 
 if(r('do') eq 'newEntry')
 {
@@ -166,58 +166,44 @@ elsif(r('edit') ne '')
 		close FILE;
 		my @entry = split(/¬/, $tempContent);
 		my @pages = getPages();
+		my @categories = getCategories();
 		my $fileName = $entry[4];
 		my $title = $entry[0];
 		my $content = $entry[1];
 		my $category = $entry[3];
-		# 100613 added sc0ttmans UTF-8 fix
-		print '<h1>'.$locale{$lang}->{edit}.'...</h1>
-		<form accept-charset="UTF-8" action="" name="submitform" method="post">
-		<table>
-		<tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name=title type=text id=title value="'.$title.'"></td>
-		</tr>';
-		bbcodeButtons();
-		print '<td><textarea name=content cols="57" rows="15" id="content">';
 		
-		#Efia added new buttons, took out WYSIWYG option and html option, bbdecode does not seem to hurt text entered as html
+		# 100613 added sc0ttmans UTF-8 fix
+		print '<form accept-charset="UTF-8" action="" name="submitform" method="post">
+		<legend>'.$locale{$lang}->{edit}.'...</legend>
+		<p><label for="title">'.$locale{$lang}->{title}.'</label>
+		<input name=title type=text id=title value="'.$title.'"></p>';
+		bbcodeButtons();
+		print '<label for="isHTML">'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span></label>
+		<input type="checkbox" name="isHTML" value="1"><textarea name=content id="content">';
 		
 			print bbdecode($content);
 		
-		print '</textarea></td></tr><tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.' ">(?)</span></td><td>'; #Cat. tooltip 24.05.13
-		my @categories = getCategories();
-		my $i = 1;
-		foreach(@categories)
-		{
-			if($i < scalar(@categories))	# Here we display a comma between categories so is easier to undesrtand
+		print '</textarea>
+		<p><label for="category">'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.'">(?)</span></label>
+		<input name="category" type="text" id="category" value="'.$category.'">';
+		
+			if( scalar(@categories) > 0){
+			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" >";
+		
+			foreach(@categories)	# Here we display a comma between categories so is easier to undesrtand
 			{
-				print $_.', ';
+				print '<option  value="'.$_.'\'" >'.$_.'</option>';
 			}
-			else
-			{
-				print $_;
-			}
-			$i++;
+		
+			print '</select>';
 		}
-		print '</td></tr><tr><td>&nbsp;</td>
-		<td><input name="category" type="text" id="category" value="'.$category.'"></td>
-		</tr>
-		<tr>	
-		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span>
-		<input type="checkbox" name="isHTML" value="1"></td><td>';
-		print $locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span>
-		<input type="checkbox" name="isPage" value="1">' unless (grep { $_ == $entry[4] } @pages) ;
-		print'</td>
-		</tr>
-		<tr>
-		<td><input name="process" type="hidden" id="process" value="doEntry">
-		<input name="viewDetailed" type="hidden" id="viewDetailed" value="'.$id.'"></td>
-		<td>';
-		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">' if ($id =~ /notes/);
-		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{edentry}.'"></td>
-		</tr>
-		</table>
+		print '</p>
+		<p><label for="isPage">'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span></label>
+		<input type="checkbox" name="isPage" value="1"></p>' unless (grep { $_ == $entry[4] } @pages) ;
+		print'<p><input name="process" type="hidden" id="process" value="doEntry">
+		<input name="viewDetailed" type="hidden" id="viewDetailed" value="'.$id.'">';
+		print'<input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">' if ($id =~ /notes/);
+		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{edentry}.'"></p>
 		</form>';
 }
 
@@ -227,18 +213,15 @@ elsif(r('delete') ne '')
 	
 	my $fileName = r('delete');
 	# 100613 added sc0ttmans UTF-8 fix
-	print '<h1>'.$locale{$lang}->{delete}.'...</h1>
-	<form accept-charset="UTF-8" name="form1" method="post">
-	<table>
-	<td>'.$locale{$lang}->{sure}.' <a href="?viewDetailed='.$fileName.'">'.$locale{$lang}->{back}.'</a>
+	print '<form accept-charset="UTF-8" name="form1" method="post">
+	<legend>'.$locale{$lang}->{delete}.'...</legend>
+	<p>'.$locale{$lang}->{sure}.' <a href="?viewDetailed='.$fileName.'">'.$locale{$lang}->{back}.'</a>
 	<input name="process" type="hidden" id="process" value="deleteEntry">
 	<input name="fileName" type="hidden" id="fileName" value="'.$fileName.'">
-	<td><input type="submit" name="Submit" value="'.$locale{$lang}->{delete}.'"></td>
-	</tr>
-	</table>
+	<input type="submit" name="Submit" value="'.$locale{$lang}->{delete}.'"></p>
 	</form>';
 }
-
+ 
 #Display Individual Entry and all processes which end with displaying an entry
 elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doComment' || r('process') eq 'deleteComment')
 {
@@ -501,28 +484,23 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 		# Add comment form
 		# 100613 added sc0ttmans UTF-8 fix
 		$comContent=r('comContent');
-		print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
+		print '<br /><br />
 		<form accept-charset="UTF-8" name="submitform" method="post" action="'.$ENV{SCRIPT_URL}.'#preview">
-		<table> <tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></td>
-		</tr>';
+		<legend>'.$locale{$lang}->{addcomment}.'</legend>
+		<p><label for="comTitle">'.$locale{$lang}->{title}.'</label>
+		<input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></p>';
 		#bbcode buttons on comment form (or not)
 		if ($config_bbCodeOnCommentaries == 1)
 		{
 			bbcodeComments();
 		}
-		else
-		{
-			print'<tr><td>&nbsp;</td>';
-		}
-		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td>
-		</tr><tr><td>
-		<input name="process" value="doComment" type="hidden" id="process">
+		print '<textarea name="comContent" id="comContent" >'.$comContent.'</textarea>
+		<p><input name="process" value="doComment" type="hidden" id="process">
 		<input name="viewDetailed" value="'.$fileNum.'" type="hidden" id="viewDetailed">
-		<input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle"></td>
-		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'"><input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'"></td>
-		</tr></table></form>';
+		<input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle">
+		<input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'">
+		<input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
+		</p></form>';
 		}
 }
 
@@ -534,15 +512,12 @@ elsif(r('deleteComment') ne '')
 	my @info = split(/\./, $data);
 	$fileName = $info[0];
 	
-	print '<h1>'.$locale{$lang}->{delcomment}.'...</h1>
-	<form name="form1" method="post">
-	<table>
-	<td>'.$locale{$lang}->{sure}.' <a href="?viewDetailed=posts/'.$fileName.'">'.$locale{$lang}->{back}.'</a>
+	print '<form name="form1" method="post">
+	<legend>'.$locale{$lang}->{delcomment}.'...</legend>
+	<p>'.$locale{$lang}->{sure}.' <a href="?viewDetailed=posts/'.$fileName.'">'.$locale{$lang}->{back}.'</a>
 	<input name="process" type="hidden" id="process" value="deleteComment">
-	<input name="data" type="hidden" id="data" value="'.$data.'"></td>
-	<td><input type="submit" name="Submit" value="'.$locale{$lang}->{delcomment}.'"></td>
-	</tr>
-	</table>
+	<input name="data" type="hidden" id="data" value="'.$data.'">
+	<input type="submit" name="Submit" value="'.$locale{$lang}->{delcomment}.'"></p>
 	</form>';
 }
 #list comments

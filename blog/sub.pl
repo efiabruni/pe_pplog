@@ -269,13 +269,14 @@ sub getComments
 #subs for the menu
 sub menuMobileSearch
 {
-	print '<form id="mobile" accept-charset="UTF-8" name="form1" method="post" style=" text-align:center; margin-left:1%; width:98%">
+	print '<form id="mobile" accept-charset="UTF-8" name="form1" method="post">
 	<input type="text" name="keyword">
 	<input type="hidden" name="do" value="search">
-	<input type="submit" name="Submit" value="'.$locale{$lang}->{search}.'"><br />
-	'.$locale{$lang}->{bytitle}.' <input name="by" type="radio" value="0" checked> '.$locale{$lang}->{bycontent}.' <input name="by" type="radio" value="1">
+	<input type="submit" name="Submit" value="'.$locale{$lang}->{search}.'">
+	<input name="by" type="hidden" value="1">
 	</form> ';
 }
+
 sub menuSearch
 {
 	print '<h1>'.$locale{$lang}->{search}.'</h1>
@@ -451,45 +452,36 @@ sub doNewEntry
 	# Blog Add New Entry Form
 	# 100613 added sc0ttmans UTF-8 fix
 		my @categories = getCategories();
-		print '<h1>'.$locale{$lang}->{new}.'...</h1>	
-		<form accept-charset="UTF-8" action="" name="submitform" method="post">
-		<table><tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name=title type=text id=title></td>
-		</tr>';
+		print '<form accept-charset="UTF-8" action="" name="submitform" method="post">
+		<legend>'.$locale{$lang}->{new}.'...</legend>
+		<p><label for ="title">'.$locale{$lang}->{title}.'</label>
+		<input name=title type=text id=title></p>';
 		
 		bbcodeButtons();
 		
-		print '<td><textarea name="content" cols="60" rows="15" id="content"></textarea></td></tr>
-		<tr><td>'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.'">(?)</span></td><td>';
-
-			
-		my $i = 1;
-		foreach(@categories)
-		{
-			if($i < scalar(@categories))	# Here we display a comma between categories so is easier to undesrtand
-			{
-				print $_.', ';
-			}
-			else
-			{
-				print $_;
-			}
-			$i++;
-		}
-		print '</td></tr>
-		<tr><td>&nbsp;</td><td><input name="category" type="text" id="category"></td></tr>
-		<tr>
-		<td>'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span>
+		print '<label for"isHTML">'.$locale{$lang}->{ishtml}.' <span text="'.$locale{$lang}->{spanhtml}.'">(?)</span></label>
 		<input type="checkbox" name="isHTML" value="1">
-		</td><td></td>
-		</tr><tr>
-		<td>'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span>
-		<input type="checkbox" name="isPage" value="1">
-		<input name="process" type="hidden" id="process" value="doEntry"></td> 
-		<td><input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">';
+		<textarea name="content" id="content"></textarea> 
+		<p><label for="category">'.$locale{$lang}->{categories}.' <span text="'.$locale{$lang}->{spancat}.'">(?)</span></label>
+		<input name="category" type="text" id="category">';
+
+			if( scalar(@categories) > 0){
+			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" >";
+		
+			foreach(@categories)	# Here we display a comma between categories so is easier to undesrtand
+			{
+				print '<option  value="'.$_.'\'" >'.$_.'</option>';
+			}
+		
+			print '</select>';
+		}
+		print '</p>
+		<p><label for="isPage">'.$locale{$lang}->{ispage}.' <span text="'.$locale{$lang}->{spanpage}.'">(?)</span></label>
+		<input type="checkbox" name="isPage" value="1"></p>
+		<p><input name="process" type="hidden" id="process" value="doEntry">
+		<input type="submit" name="Submit" value="'.$locale{$lang}->{subentry}.'">';
 		print '<input type="submit" name="Submit" value="'.$locale{$lang}->{newnote}.'">' if grep {$_ eq 'notes'} @config_pluginsAdmin;
-		print '</td></tr></table></form>';
+		print '</p></form>';
 }
 sub listComments
 {#list all comments
@@ -744,14 +736,27 @@ EOF
 #JQuery functions
 sub JQuery
 {
-	print '	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
+	print q \
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
 	 <script> $(document).ready(function(){$(".hide").hide();
      $(".slide #flip").click(function(event){
 	 $(this).next(".hide").toggle("slow"); 
 		event.preventDefault(); });
 	$("#mobile").click(function(event){$("header div, form#mobile").slideToggle("slow");
 		event.preventDefault(); });
-	});</script>';
+	$("[name='isHTML']").click(function(){
+		if($("[name='isHTML']").is(":checked"))
+		{
+			$(".screen").hide(); 
+		}
+		else
+		{
+			if ($(window).width()>=550){
+				$(".screen").show(); 
+			}
+		}
+		});
+	});</script>\;
 }	
 
 

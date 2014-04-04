@@ -54,45 +54,102 @@ div#header a:hover {background-color:#32619F; color:white;}
 #header .drop{display:none; list-style:none;}
 #header .menu:hover ul{display:block; position:absolute; width:200px; max-height:300px; overflow-y:scroll;}
 
-a#mobile
-{font-size:0px;float:right; background:#1D3D0F; color:white;}
+a#mobile{font-size:0px;float:right; background:#1D3D0F; color:white;}
+form#mobile{display:none;text-align:center; font-size:1.5em; padding:0px;}
 
-form#mobile{display:none;}
-
-table {
+/* forms*/
+form{
 	font-size: 14px;
 	text-align: left;
+	width:100%;
 }
 
- input, button, select, radio {
-	margin: 1px;
-	padding: 2px;
-    /* background-color: white;
-	border: 1px outset #6E4C30;*/
-	max-width: 400px;
-	color: #4D4D4D;
+fieldset, form p{border:0px; width:100%; margin:0px; margin-top:20px; }
+
+/*input and buttons*/
+label{
+background-color: #EEEEEE;
+padding:6px;
+margin-right: 2px;
+display:inline-block;
+width:28%;
+max-width:250px;
+}
+
+input, select, div.smilies {	
 	font-family: "Liberation Sans", "Century Gothic",  "Lucida Sans Unicode", "Droid Sans" ,sans-serif;
 	font-size: 14px;
+	width:30%;
+	max-width:250px;
+	padding: 7px;
+	color:#003300;
+	margin-right: 2px;
+	background-color: #DDDDDD;
+	border: 1px solid #777777;
+    border-top: 1px solid white;
+	border-left: 1px solid white;
+    box-shadow:1px 1px 1px #CCCCCC;
+
 }
-pre {line-height: 10px;}
-textarea, pre{
-	padding: 2px;
-	margin: 2px;
-	background-color: #E5E5E5;
-	border: 1px inset #BFBFBF;
-	max-width: 600px;
-	max-height: 400px;
-	color: #4D4D4D;
+
+input[type='button'], div.smilies {
+	width:8%;
+	margin-right: 12px;
+	margin-left:-10px;
+ 	max-width: 64px;
+}
+
+div.smilies{
+	display:inline;
+	position:absolute;
+	padding:0px;
+	height:33px;
+	overflow:hidden;
+	margin-top: 0px;
+	margin-left: -6px;
+	background-color: #DDDDDD;
+}
+
+div.smilies:hover{
+width:10%;
+height:auto;
+max-width: 200px;
+position:absolute;
+}
+
+input[type='submit']{
+	color: white;
+	background-color: #003300;
+	border: 1px solid #003300;
+    border-top: 1px solid #006600;
+	border-left: 1px solid #006600;
+}
+input[type='radio'], input[type='checkbox'] {width:auto;}
+input[type='image'].screen {margin-right:30%;}
+input#isHTML {width:500px;}
+input:hover, button:hover {	border: 2px outset #CCCCCC;}
+
+/*text inputs and fields*/
+textarea, pre, input[type='text'], input[type='password']{
+	padding: 5px; 
+	background-color: #EEEEEE;
+	border: 1px inset #CCCCCC;
+	color: #333333;
 	font-family: serif;
 	font-size: 14px;
-	overflow: scroll;
-	}
+	box-shadow:inset 1px 1px 1px 1px #CCCCCC;
+}
+
+textarea, pre {padding: 10px; overflow: scroll; width:100%;}
+textarea#content {height:300px;}
+textarea#comContent { height:200px; max-width:550px;}
+
+pre {line-height: 10px;}
 	
 *::-moz-selection {
 	background-color:#6E4C30;
 	color: white;
 }
-
 a#flip {color:#4D4D4D;font-weight:bold;}
 
 nav  {
@@ -135,7 +192,7 @@ div#content {
 	/* border-left: 1px dashed silver; */
 }
 
-#content h1 {
+#content h1, legend {
 
 	font-size: 22px;
 	color: #1D3D0F;
@@ -162,6 +219,7 @@ color:white;
 background-color:#1D3D0F;
 }
 
+input[type='image']{width:auto; background-color:inherit; color: #333333; margin: 2px; padding: 2px;  border: none; box-shadow:0px 0px 0px 0px white;}
 input:focus + .box {width:100%; padding:2%; font-size:14px; height:100%;}
 input:focus + .box *{opacity:1;}
 

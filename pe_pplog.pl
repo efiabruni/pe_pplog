@@ -394,46 +394,37 @@ elsif(r('viewDetailed') ne '')
 	# Add comment form
 
 		# 100613 added sc0ttmans UTF-8 fix
-		print '<br /><br /><h1>'.$locale{$lang}->{addcomment}.'</h1>
+		$comContent=r('comContent');
+		print '<br /><br />
 		<form accept-charset="UTF-8" name="submitform" method="post" action="'.$ENV{SCRIPT_URL}.'#preview">
-		<table><tr>
-		<td>'.$locale{$lang}->{title}.'</td>
-		<td><input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></td>
-		</tr><tr>
-		<td>'.$locale{$lang}->{author}.'</td>
-		<td><input name="author" type="text" id="author" value="'.$author.'"></td>
-		</tr><tr><td>&nbsp;</td>';
+		<legend>'.$locale{$lang}->{addcomment}.'</legend>
+		<p><label for="comTitle">'.$locale{$lang}->{title}.'</label>
+		<input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></p>
+		<p><label for="author">'.$locale{$lang}->{author}.'</label>
+		<input name="author" type="text" id="author" value="'.$author.'"></p>
+		<textarea name="comContent" id="comContent">'.$comContent.'</textarea>';
 		
-		print '<td><textarea name="comContent" id="comContent" cols="50" rows="10">'.$comContent.'</textarea></td></tr>';
- 
 		if($config_commentsSecurityCode == 1)
 		{
 			my $SecurityCode = uc(substr(crypt(rand(999999), $config_randomString),1,8));
 			$SecurityCode=~ s/\.//;
 			$SecurityCode =~ s/\///;
 			
-			print '<tr><td>'.$locale{$lang}->{code}.'</td>
-			<td>'.$SecurityCode.'<input name="originalCode" value="'.$SecurityCode.'" type="hidden" id="originalCode"></td>
-			</tr><tr><td></td>
-			<td><input name="code" type="text" id="code"></td></tr>';
+			print '<p><label for="code">'.$locale{$lang}->{code}.': '.$SecurityCode.'<input name="originalCode" value="'.$SecurityCode.'" type="hidden" id="originalCode"></label>
+			<input name="code" type="text" id="code"></p>';
 		}
 		
-		print '<tr>
-		<td>'.$config_commentsSecurityQuestion.'</td>
-		<td><input name="question" type="text" id="question" value="'.$question.'"></td>
-		</tr><tr>' if $config_securityQuestionOnComments == 1;
+		print '<p><label for="question">'.$config_commentsSecurityQuestion.'</label>
+		<input name="question" type="text" id="question" value="'.$question.'"></p>' if $config_securityQuestionOnComments == 1;
  
-		print '<tr>
-		<td>'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></td>
-		<td><input name="pass" type="password" id="pass" value="'.$pass.'"></td>
-		</tr><tr>
-		<td><input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle">
+		print '<p><label for="pass">'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></label>
+		<input name="pass" type="password" id="pass" value="'.$pass.'"></p>
+		<p><input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle">
 		<input name="process" value="doComment" type="hidden" id="process">
 		<input name="viewDetailed" value="'.$fileName.'" type="hidden" id="viewDetailed">
-		</td><td>
 		<input type="submit" name="Submit" value="'.$locale{$lang}->{preview}.'">
 		<input type="submit" name="Submit" value="'.$locale{$lang}->{addcomment}.'">
-		</td></tr></table></form>';
+		</p></form>';
 	}
 }
 
