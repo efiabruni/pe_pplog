@@ -1,12 +1,12 @@
 # 19.07.13 added edit css option, thanks to sc0ttman!
 if (r('process')eq 'editConfig')
 {
-	if (r('pass') eq $config_adminPass && r('content') ne ''){
+	if (r('pass') eq $config_adminPass && r('confContent') ne ''){
 
-		my $content = basic_r('content');
+		my $content = basic_r('confContent');
 		my $which = r('which');
 		my $file;
-		$file = "$config_serverRoot/$config_currentStyleFolder/$config_currentStyleSheet" if $which eq "css";
+		$file = "$config_serverRoot$config_currentStyleFolder/$config_currentStyleSheet" if $which eq "css";
 		
 		if ($which eq "config"){
 		$file = "$config_DatabaseFolder/pe_Config.pl";
@@ -17,7 +17,7 @@ if (r('process')eq 'editConfig')
 			}
 		}
 		open (FILE, ">$file");
-		print FILE $content and print '<br />'.$locale{$lang}->{saved}.' <a href="?page=1">'.$locale{$lang}->{goindex}.'</a>';
+		print FILE $content and print $file.'<br />'.$locale{$lang}->{saved}.' <a href="?page=1">'.$locale{$lang}->{goindex}.'</a>';
 		close FILE;
 	}
 	else {print '<br />'.$locale{$lang}->{nosaved}.' <a href="?do=editConfig">'.$locale{$lang}->{try}.'</a>?';}
@@ -28,7 +28,7 @@ elsif (r('password') eq $config_adminPass){
 
 	my $configFile = "$config_DatabaseFolder/pe_Config.pl";
 	my $content = '';
-	my $cssFile = "$config_serverRoot/$config_currentStyleFolder/$config_currentStyleSheet";
+	my $cssFile = "./$config_currentStyleFolder/$config_currentStyleSheet";
 	my $css = '';
 	my $pass = r('password');
 	
@@ -36,34 +36,34 @@ elsif (r('password') eq $config_adminPass){
 	while (<FILE>){$content .= $_;}
 	close FILE;
 	
-	print '<h1>'.$locale{$lang}->{changesettings}.'</h1>
-		   <form accept-charset="UTF-8" name="submitform" method="post">
-		   <textarea name="content"  rows="200" cols="100" wrap="off" style="max-width:100%" id="content">'
+	print '<form accept-charset="UTF-8" name="submitform" method="post">
+		   <legend>'.$locale{$lang}->{changesettings}.'</legend>
+		   <textarea name="confContent"  wrap="off" rows="30" id="confContent">'
 		   .$content.
-		  '</textarea><br /><br />
-		   '.$locale{$lang}->{warning1}.'<a href="?page=1">'.$locale{$lang}->{warning2}.'</a>
+		  '</textarea><p>
+		    '.$locale{$lang}->{warning1}.'<a href="?page=1">'.$locale{$lang}->{warning2}.'</a>
 		   <input name="pass" type="hidden" id="pass" value="'.$pass.'">
 		   <input name="which" type="hidden" id="which" value="config">
 		   <input name="process" type="hidden" id="process" value="editConfig">
-		   <input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{edentry}.'"></form>';
+		   <input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{edentry}.'"></p></form><br />';
 		   
 	open (FILE, $cssFile) or print $locale{$lang}->{noopencss};
 	while (<FILE>){$css .= $_;}
 	close FILE;
 	
-	print '<h1>'.$locale{$lang}->{changestyle}.'</h1>
-		   <form accept-charset="UTF-8" name="submitform" method="post">
-		   <textarea name="content"  rows="200" cols="100" wrap="off" style="max-width:100%" id="content">'
+	print '<form accept-charset="UTF-8" name="submitform" method="post">
+		   <legend>'.$locale{$lang}->{changestyle}.'</legend>
+		   <textarea name="confContent" wrap="off" rows="30" id="confContent">'
 		   .$css.
-		  '</textarea><br /><br />
+		  '</textarea><p>
 		   <input name="pass" type="hidden" id="pass" value="'.$pass.'">
 		   <input name="which" type="hidden" id="which" value="css">
 		   <input name="process" type="hidden" id="process" value="editConfig">
-		   <input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{edentry}.'"></form>';
+		   <input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{edentry}.'"></p></form>';
 }
 else {
-	print '<h1>'.$locale{$lang}->{eCpassword}.'</h1>
-	<form method="post" action="">
+	print '<form method="post" action="">
+	<legend>'.$locale{$lang}->{eCpassword}.'</legend>
 	<input type="password" name="password">
 	<input name="do" type="hidden" id="do" value="editConfig">
 	<input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{submit}.'"></form>';

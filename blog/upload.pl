@@ -11,7 +11,7 @@ if (r('process') eq 'upload')
   
 	if(!(opendir(DIR, $out_folder))) # create the folder if it does not exist
 	{
-		mkdir($out_folder, 0644);
+		mkdir($out_folder, 0755);
 	}
 	
 	foreach my $file(@filename)
@@ -48,11 +48,9 @@ if (r('process') eq 'upload')
 	
 
 print '<form method="post" action="http://'.$ENV{HTTP_HOST}.$ENV{REQUEST_URI}.'" enctype="multipart/form-data" accept-charset="UTF-8">
-<table><tr>
-<td>'.$locale{$lang}->{file}.'</td>
-<td><input type="file" name="filename" multiple /></td></tr>
-<tr>
-<td>'.$locale{$lang}->{folder}.'</td><td><select name="folder"/>';
+<p><label for="file">'.$locale{$lang}->{file}.'</label>
+<input type="file" name="filename" multiple /></p>
+<p><label>'.$locale{$lang}->{folder}.'</label><select name="folder"/>';
 
 #show upload folders and subfolders (2 levels)
 foreach $fol(@config_uploadFolders){ 
@@ -71,10 +69,10 @@ foreach $fol(@config_uploadFolders){
 	}
 	
 }
-print'</select></td></tr>
-<tr><td><input type="hidden" name="process" value="upload" id="process" /></td>
-<td><input type="submit" name="Submit" value='.$locale{$lang}->{submit}.' /></td></tr>
-</table></form>';
+print'</select></p>
+<p><input type="hidden" name="process" value="upload" id="process" />
+<input type="submit" name="Submit" value='.$locale{$lang}->{submit}.' /></p>
+</form>';
 
 
 
