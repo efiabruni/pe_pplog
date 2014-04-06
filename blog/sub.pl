@@ -3,6 +3,7 @@ our $config_serverRoot = $ENV{'DOCUMENT_ROOT'};
 our $config_postsDatabaseFolder = "$config_DatabaseFolder/posts";
 our $config_commentsDatabaseFolder = "$config_DatabaseFolder/comments";
 our $config_dbFilesExtension = 'ppl';	
+our @keys = keys%config_commentsSecurityQuestion;
 
 #HTML functions are encoded
 sub r

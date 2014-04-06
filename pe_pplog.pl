@@ -395,29 +395,21 @@ elsif(r('viewDetailed') ne '')
 
 		# 100613 added sc0ttmans UTF-8 fix
 		$comContent=r('comContent');
+		$originalQuestion=$keys[rand @keys];
 		print '<br /><br />
 		<form accept-charset="UTF-8" name="submitform" method="post" action="'.$ENV{SCRIPT_URL}.'#preview">
 		<legend>'.$locale{$lang}->{addcomment}.'</legend>
 		<p><label for="comTitle">'.$locale{$lang}->{title}.'</label>
 		<input name="comTitle" type="text" id="comTitle" value="'.$comTitle.'"></p>
+		<p class="comment"><label for="commment">'.$locale{$lang}->{pot}.'</label>
+		<input name="comment" type="text" id="comment" ></p>
 		<p><label for="author">'.$locale{$lang}->{author}.'</label>
 		<input name="author" type="text" id="author" value="'.$author.'"></p>
 		<textarea name="comContent" id="comContent">'.$comContent.'</textarea>';
 		
-		if($config_commentsSecurityCode == 1)
-		{
-			my $SecurityCode = uc(substr(crypt(rand(999999), $config_randomString),1,8));
-			$SecurityCode=~ s/\.//;
-			$SecurityCode =~ s/\///;
-			
-			print '<p><label for="code">'.$locale{$lang}->{code}.': '.$SecurityCode.'<input name="originalCode" value="'.$SecurityCode.'" type="hidden" id="originalCode"></label>
-			<input name="code" type="text" id="code"></p>';
-		}
-		
-		print '<p><label for="question">'.$config_commentsSecurityQuestion.'</label>
-		<input name="question" type="text" id="question" value="'.$question.'"></p>' if $config_securityQuestionOnComments == 1;
- 
-		print '<p><label for="pass">'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></label>
+		print '<p><label for="question"><input name="originalQuestion" value="'.$originalQuestion.'" type="hidden" id="originalQuestion">
+		'.$originalQuestion.'</label><input name="question" type="text" id="question" ></p>
+		<p><label for="pass">'.$locale{$lang}->{password}.' <span text="'.$locale{$lang}->{spancom}.'">(?)</span></label>
 		<input name="pass" type="password" id="pass" value="'.$pass.'"></p>
 		<p><input name="postTitle" value="'.$entry[0].'" type="hidden" id="postTitle">
 		<input name="process" value="doComment" type="hidden" id="process">

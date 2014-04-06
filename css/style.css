@@ -55,7 +55,7 @@ div#header a:hover {background-color:#32619F; color:white;}
 #header .menu:hover ul{display:block; position:absolute; width:200px; max-height:300px; overflow-y:scroll;}
 
 a#mobile{font-size:0px;float:right; background:#1D3D0F; color:white;}
-form#mobile{display:none;text-align:center; font-size:1.5em; padding:0px;}
+form#mobile, .comment{display:none;text-align:center; font-size:1.5em; padding:0px;}
 
 /* forms*/
 form{
