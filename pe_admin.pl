@@ -533,17 +533,21 @@ elsif(r('do') eq 'listPag')
 	my @tempEntries = ();
 	my $do = '?do=listPag&';
 	my $part = 1;
-	
-    foreach my $item(@entries)
-	{
-		my @split = split(/¬/, $item);	
-		if (grep { $_ == $split[4] } @pages)
-		{
-		 push (@tempEntries, $item);
-		}
-	}
 
-doPages($do, $part, @tempEntries);
+	if (scalar(@pages) == 0){print $locale{$lang}->{nopages1}.' <a href="?do=newEntry">'.$locale{$lang}->{nopages2}.'</a>';}
+	
+	else
+	{
+		foreach my $item(@entries)
+		{
+			my @split = split(/¬/, $item);	
+			if (grep { $_ == $split[4] } @pages)
+			{
+			push (@tempEntries, $item);
+			}
+		}
+		doPages($do, $part, @tempEntries);
+	}
 }
 
 elsif(r('viewCat') ne '')
@@ -556,16 +560,20 @@ elsif(r('viewCat') ne '')
 	my $do = '?viewCat='.$cat.'&';
 	my $part = 1;
 	
-	foreach my $item(@entries)
-	{
-		my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
-		my @nextsplit = split(/'/,$split[3]);									# Split the categories (if more than 1)
-		if (grep { $_ eq $cat } @nextsplit)
+	if (scalar(@entries) == 0){print $locale{$lang}->{nopages1}.' <a href="?do=newEntry">'.$locale{$lang}->{nopages2}.'</a>';}
+	
+	else{
+		foreach my $item(@entries)
 		{
-		push(@thisCategoryEntries, $item);
+			my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
+			my @nextsplit = split(/'/,$split[3]);									# Split the categories (if more than 1)
+			if (grep { $_ eq $cat } @nextsplit)
+			{
+			push(@thisCategoryEntries, $item);
+			}
 		}
+		doPages($do, $part, @thisCategoryEntries);
 	}
-	doPages($do, $part, @thisCategoryEntries);
 }
 #search
 elsif(r('do') eq 'search')

@@ -149,7 +149,6 @@ foreach(@config_ipBan)
 }
 
 # Start with GETS and POSTS		
-
 if(r('viewCat') ne '')
 {
 	# Blog Category Display
@@ -160,16 +159,20 @@ if(r('viewCat') ne '')
 	my $do = '?viewCat='.$cat.'&';
 	my $part = 0;
 	
-	foreach my $item(@entries)
-	{
-		my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
-		my @nextsplit = split(/'/,$split[3]);									# split if more than one category
-		if (grep { $_ eq $cat } @nextsplit)
+	if (scalar(@entries) == 0){print $locale{$lang}->{nopages1};}
+
+	else{
+		foreach my $item(@entries)
 		{
-		push(@thisCategoryEntries, $item);
+			my @split = split(/¬/, $item);											# [0] = Title	[1] = Content	[2] = Date	[3] = Category
+			my @nextsplit = split(/'/,$split[3]);									# split if more than one category
+			if (grep { $_ eq $cat } @nextsplit)
+			{
+			push(@thisCategoryEntries, $item);
+			}
 		}
+		doPages($do, $part, @thisCategoryEntries);
 	}
-	doPages($do, $part, @thisCategoryEntries);	
 }
 
 #search
@@ -457,15 +460,18 @@ else
 	my $do='?';
 	my $part=0;
 	
-	foreach my $item(@tmpEntries)
-		{
-			my @split = split(/¬/, $item);
-			unless (grep {$_ eq $split[4] } @pages){push(@entries, $item);}
-		}
-	
-	doPages($do, $part, @entries);
+	if (scalar(@tmpEntries) == 0){print $locale{$lang}->{nopages1};}
+
+	else{
+		foreach my $item(@tmpEntries)
+			{
+				my @split = split(/¬/, $item);
+				unless (grep {$_ eq $split[4] } @pages){push(@entries, $item);}
+			}
+		doPages($do, $part, @entries);
+	}
 }
-#footer
+
 print '</div><nav>'
 #THIS IS THE SIDEBAR MENU 
 #Custom html in menu top
