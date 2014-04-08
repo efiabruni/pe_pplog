@@ -207,12 +207,12 @@ elsif(r('viewDetailed') ne '')
 	my @categories = split (/'/, $entry[3]);
 
 	#display the entry
-	print '<h1>'.$entry[0].'</h1>'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer id="footer">'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
+	print '<h1>'.$entry[0].'</h1><div class="full">'.$config_customHTMLpost.'</br>'.$entry[1].'<br /><br /><footer id="footer">'.$locale{$lang}->{postedon}.$entry[2].' - '.$locale{$lang}->{categories}.': ';
 	for (0..$#categories){
-		print '<a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
+		print ' <a href="?viewCat='.$categories[$_].'">'.$categories[$_].'</a> ';
 	}
-	print '</footer><br /><br />';
- 
+	print '</footer></div>';
+	
 	# Now Display Comments
 	unless(-d $config_commentsDatabaseFolder)	# Does the comments folder exists? We will save comments there...
 	{
