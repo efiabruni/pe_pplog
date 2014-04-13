@@ -188,7 +188,7 @@ elsif(r('edit') ne '')
 		<input name="category" type="text" id="category" value="'.$category.'">';
 		
 			if( scalar(@categories) > 0){
-			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" >";
+			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" ><option selected='selected' disabled='disabled'>...</option>";
 		
 			foreach(@categories)	# Here we display a comma between categories so is easier to undesrtand
 			{

@@ -467,7 +467,7 @@ sub doNewEntry
 		<input name="category" type="text" id="category">';
 
 			if( scalar(@categories) > 0){
-			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" >";
+			print "<select onChange=\"surroundText(value,'', document.forms.submitform.category );\" ><option selected='selected' disabled='disabled'>...</option>";
 		
 			foreach(@categories)	# Here we display a comma between categories so is easier to undesrtand
 			{
@@ -738,7 +738,7 @@ EOF
 sub JQuery
 {
 	print q \
-	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
+	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> 
 	 <script> $(document).ready(function(){$(".hide").hide();
      $(".slide #flip").click(function(event){
 	 $(this).next(".hide").toggle("slow"); 
