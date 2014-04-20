@@ -68,4 +68,5 @@ else {
 	<input name="do" type="hidden" id="do" value="editConfig">
 	<input type="submit" name="Submit" type="hidden" value="'.$locale{$lang}->{submit}.'"></form>';
 }
+1;
 		

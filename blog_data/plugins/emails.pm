@@ -11,4 +11,4 @@ foreach (@emails){
 	<footer>'.$locale{$lang}->{postedon}.$entries[2].'</footer></div>';
 }
 print "0 $locale{$lang}->{emails}" if (scalar(@emails) == 0);	
-print '';
+1;

@@ -13,7 +13,7 @@ our $config_blogFooter='';														# on bottom of page
 our $config_blogTitle = 'blog';													# Blog title 
 
 #Folders:																		
-our $config_DatabaseFolder = '/root/blog';										# Full path	should be outside of server home, but needs to be read and writable by server
+our $config_DatabaseFolder ='./blog_data';										# Full path	should be outside of server home, but needs to be read and writable by server
 our $config_smiliesFolder = '/pe_pplog/images/smilies';									# Relative path from server home. For the smilies, add and change smilies as you wish
 our $config_currentStyleFolder = '/pe_pplog/css';										# Styles folder 
 our $config_currentStyleSheet = 'style.css';									# Style sheet name
@@ -29,11 +29,10 @@ our $config_entriesOnRSS = 0;													# 0 = ALL ENTRIES, if you want a limit
 
 #Menu options:
 our $config_menuEntriesLimit = 10;												# Limits of entries to show in the menu
-our @config_menuLinks = qw(' http://puppylinux.com/,Puppy_Linux ', ' https://code.google.com/p/pplog/,Pup_pplog ', ' http://pplog.scottjarvis.com/,SJPPlog ', ' http://tine.pagekite.me/blog/,pe_pplog ');
+our %config_menuLinks =('pe_pplog'=>'http://tine.pagekite.me/blog', 'Puppy Linux'=>'http://puppylinux.com', 'Pup_pplog'=>'https://code.google.com/p/pplog/');#External links in the menu
 
 our $config_showLatestComments = 1;												# Show latest comments on the menu
 our $config_showLatestCommentsLimit = 10;										# Show 10 latest comments
-
 our $config_showHits = 1;														# Want to show how many users are 
 our $config_showUsersOnline = 0;												# Wanna show how many users are browsing 
 our $config_usersOnlineTimeout = 120;											# How long is an user considered online? In 
@@ -41,11 +40,8 @@ our $config_usersOnlineTimeout = 120;											# How long is an user considered
 #Comments settings:
 our $config_allowComments = 1;													# Allow comments
 our @config_commentsForbiddenAuthors = qw/admin administrator/;					# These are the usernames that normal users, first name is default for Admin comments 
-
-our $config_commentsSecurityCode = 1;											# Allow security code for comments (good idea unless you like spam)
-our $config_securityQuestionOnComments = 0;										# Allow the option to display a question 
-our $config_commentsSecurityQuestion = 'Name of the Puppy Linux mascot?';		# You shall change it, choose a question you like
-our $config_commentsSecurityAnswer = 'Puppy';									# Answer of the security question. Change as you see fit
+#Security question for comments ('Question'=>'Answer','Question2'=>'Answer2')
+our %config_commentsSecurityQuestion =('Spell 4'=>'four','What is 2 plus 3? (Number)'=>'5','What do you call a baby dog?'=>'Puppy');#Password for comments. <a href="?do=contact">Register</a>'
 
 our $config_bbCodeOnCommentaries = 1;											# Allow BBCODE buttons on comments entry page
 our $config_commentsMaxLenght = 2000;											# Comment maximum characters
@@ -66,10 +62,10 @@ our @config_ipBan = qw/202.325.35.145 165.265.26.65/;							# 2 random IPS, sorr
 
 #adding things
 our @config_pluginsBlog = qw(contact);											#available: contact Add here the plugin files you want to use
-our @config_pluginsAdmin = qw(editConfig notes emails upload);		#available: editConfig notes emails upload
+our @config_pluginsAdmin = qw(editConfig notes emails upload);					#available: editConfig notes emails upload
 our $config_contactAddress = ''; 												#for contact form plugin
-our @config_uploadFolders = qw(/images /css); #path to folder for files from webserver root
-our @config_allowedMime = qw(image/ text/css text/html text/plain); #MIME types allowed for upload
+our @config_uploadFolders = qw(/images /css); 									#path to folder for files from webserver root
+our @config_allowedMime = qw(image/ text/css text/html text/plain);			    #MIME types allowed for upload
 
 our $config_customMenuHTMLtop = ''; 											# eg a reddit button: <a target="_blank" href="http://reddit.com/submit?url=http://'.$ENV{'HTTP_HOST'}.$ENV{'REQUEST_URI'}.'">Reddit This <img border="0" src="reddit.gif" /></a>';								
 our $config_customMenuHTMLbottom = '';											# HTML here, will appear in the bottom of the menu of the main blog
@@ -100,6 +96,7 @@ menu => "Main menu",
 index => "Index",
 new => "New entry",
 pag => "Pages",
+plug => "Plugins",
 listPag => "List Pages",
 archive => "Archive",
 rss=> "RSS Feeds",
@@ -119,12 +116,12 @@ msglog_out => "You have logged out. Goodbye!",
 msglogged => "You are logged in. Welcome!",
 msgpass => "Wrong password!",
 msgcookie => "Please allow cookies.",
-msgfile => "Not possible to write in &apos;tmp&apos; Folder",
+msgfile => "Not possible to write in 'tmp' Folder",
 pass => "Please enter your password:",
 log_in => "Log in",
 title => "Title",
 bbcode => "Bbcode help",
-spancat => "To assign more than one category to a post, use a &apos; example: category1&apos;category2 ",
+spancat => "To assign more than one category to a post, use a ' example: category1'category2 ",
 ispage => "is a page",
 spanpage => "A page is basically a post which is linked in the menu and not displayed normally",
 ishtml => "is HTML",
@@ -150,8 +147,8 @@ by => "by ",
 addcomment => "Add Comment",
 delcomment => "Delete Comment",
 pages => "Pages: ",
-nopages1 => "No Pages yet, why don&apos;t you",
-nopages2 => "make one",
+nopages1 => "No entries yet.",
+nopages2 => "Why don't you make one?",
 nocategory => "No posts under this category.",
 noplugin => "Sorry, the plugin does not seem to be installed!",
 deentry => "Entry deleted",
@@ -159,7 +156,7 @@ config => "There is something wrong with your Config. file using pe_Config.pl.ba
 newcomments => "Newest Comments",
 comment => "Comment",
 postunder => "Posted under",
-captcha => "Security Code does not match. Please, try again",
+captcha => "You are a spam bot, please go home",
 question => "Incorrect security answer. Please, try again.",
 comtwice=>"Comment has already been posted",
 compass => "Wrong password for this nickname. Please try again or choose another nickname.",
@@ -215,6 +212,7 @@ quote => "Show code or quote someone",
 http => "Clickable link",
 img => "insert an image (path)",
 box => "A lightbox (image or text)",
+pot => "Honeypot for spam bots, if you are human leave this empty",
 };
 
 $locale {"GER"} = {
@@ -237,6 +235,7 @@ menu => "Hauptmenü",
 index => "Startseite",
 new => "Neuer Eintrag",
 pag => "Seiten",
+plug => "Erweiterungen",
 rss => "RSS Feeds",
 listPag => "Seiten Auflisten",
 archive => "Blogarchiv",
@@ -256,12 +255,12 @@ msglog_out => "Sie haben sich abgemeldet. Auf Wiedersehen!",
 msglogged => "Sie sind angemeldet. Willkommen!",
 msgpass => "Falsches Passwort!",
 msgcookie => "Bitte erlauben sie Cookies.",
-msgfile => "Es ist nicht möglich in den &apos;tmp&apos; Ordner zu schreiben",
+msgfile => "Es ist nicht möglich in den 'tmp' Ordner zu schreiben",
 pass => "Geben sie ihr Passwort ein:",
 log_in => "Anmelden",
 title => "Titel",
 bbcode => "Bbcode Hilfe",
-spancat => "Um mehr als eine Kategorie anzugebne, benutzen sie ein &apos; Zum Beispiel: Kategorie1&apos;Kategorie2 ",
+spancat => "Um mehr als eine Kategorie anzugebne, benutzen sie ein ' Zum Beispiel: Kategorie1'Kategorie2 ",
 ispage => "ist eine Seite",
 spanpage => "Eine Seite ist ein Eintrag, der einen separaten Menüeintrag hat und nicht normal angezeigt wird",
 ishtml => "ist HTML",
@@ -287,16 +286,15 @@ by => "bei ",
 addcomment => "Kommentar hinzufügen",
 delcomment => "Kommentar löschen",
 pages => "Seiten: ",
-nopages1 => "Noch keine Seiten vohanden. Möchten sie eine",
-nopages2 => "erstellen",
-nocategory => "Keine Einträge unter dieser Kategorie vorhanden.",
+nopages1 => "Noch keine Einträge vohanden.",
+nopages2 => "Möchten sie einen erstellen?",
 noplugin => "Die Erweiterung scheint nicht vorhanden zu sein.",
 deentry => "Eintrag gelöscht",
 config => "Ein Fehler ist in der Konfigurationsdatei aufgetreten, pe_Config.pl.bak wird verwendet. Der Blog funktioniert, aber eventuell nicht nach ihren Einstellungen.", 
 newcomments => "Neueste Kommentare",
 comment => "Kommentar",
 postunder => "Eingetragen unter",
-captcha => "Der Sicherheitscode ist inkorrekt. Bitte versuchen sie es erneut",
+captcha => "Hallo Spambot, hau ab",
 question => "Die Antwort auf die Sicherheitsfrage ist falsch, bitte versuchen sie es erneut.",
 comtwice=>"Das Kommentar existiert schon",
 compass => "Falsches Passwort für diesen Benutzernamen. Versuchen sie es erneut, oder wählen sie einen anderen Namen.",
@@ -352,6 +350,8 @@ quote => "Code anzeigen oder jemanden zitieren",
 http => "Einen anklickbaren Link erstellen",
 img => "Ein Bild einfügen (Pfad)",
 box => "Eine 'Lightbox' eifügen (Bild oder Text)",
+pot => "Honigpot für Spambots, bitte nicht ausfüllen",
+
 };
 
 $locale {"EL"} = {
@@ -375,6 +375,7 @@ index => "Αρχική σελίδα",
 new => "Νέα δημοσίευση",
 pag => "Σελίδες",
 listPag => "Σελίδες",
+plug => "Plugins",
 archive => "Αρχείο άρθρων",
 rss=> "Ροή νέων",
 search => "Αναζήτηση",
@@ -393,12 +394,12 @@ msglog_out => "You have logged out. Goodbye!",
 msglogged => "You are logged in. Welcome!",
 msgpass => "Λάθος κωδικός",
 msgcookie => "Please allow cookies.",
-msgfile => "Not possible to write in &apos;tmp&apos; Folder",
+msgfile => "Not possible to write in 'tmp' Folder",
 pass => "Please enter your password:",
 log_in => "Εντάξει",
 title => "Τίτλος",
 bbcode => "Bbcode help",
-spancat => "To assign more than one category to a post, use a &apos; example: category1&apos;category2 ",
+spancat => "To assign more than one category to a post, use a ' example: category1'category2 ",
 ispage => "Είναι σελίδα ",
 spanpage => "Μια σελίδα είναι στην ουσία μία δημοσίευση που εμφανίζεται στο μενού και όχι στον χώρο δημοσιεύσεων.",
 ishtml => "is HTML",
@@ -424,16 +425,15 @@ by => "από τον/την ",
 addcomment => "Προσθήκη σχολίου",
 delcomment => "Διαγραφή σχολίου",
 pages => "Σελίδες:  ",
-nopages1 => "No Pages yet, why don&apos;t you",
-nopages2 => "κάνεις μία",
-nocategory => "Καμία δημοσίευση σε αυτη την κατηγορία.",
+nopages1 => "No entries yet.",
+nopages2 => "Why don't you κάνεις μία",
 noplugin => "Sorry, the plugin does not seem to be installed!",
 deentry => "Η καταχώρηση διαγράφηκε.",
 config => "There is something wrong with your Config. file using pe_Config.pl.bak. The blog is working, but maybe not how you want to?",
 newcomments => "Newest Comments",
 comment => "Τίτλος σχολίου",
 postunder => "Posted under",
-captcha => "Το κείμενο ασφαλείας είναι λάθος. Δοκίμασε ξανά.",
+captcha => "You are a spam bot, please go home",
 question => "Απάντησες λάθος. Προσπάθησε ξανά.",
 comtwice=>"Comment has already been posted",
 compass => "Το όνομα $author χρησιμοποιείται ήδη ή ξέχασες τον κωδικό σου. Επέλεξε άλλο όνομα ή πληκτρολόγησε τον κωδικό σου σωστά.",
@@ -489,6 +489,7 @@ quote => "Show code or quote someone",
 http => "Clickable link",
 img => "insert an image (path)",
 box => "A lightbox (image or text)",
+pot => "Honeypot for spam bots, if you are human leave this empty",
 };
 
 $locale {"ES"} = {
@@ -512,6 +513,7 @@ menu => "Menú principal",
 index => "Inicio",
 new => "Nueva Entrada",
 pag => "Páginas",
+plug => "Plugins",
 listPag => "Poner Páginas",
 archive => "Archivo",
 rss=> "RSS",
@@ -531,12 +533,12 @@ msglog_out => "Ha salido. ¡Adiós!",
 msglogged => "Ha accedido. ¡Bienvenido!",
 msgpass => "¡La contraseña es incorrecto!",
 msgcookie => "Por favor acepte cookies.",
-msgfile => "No puede escribir en la carpeta &apos;tmp&apos;",
+msgfile => "No puede escribir en la carpeta 'tmp'",
 pass => "Por favor ingresa su contraseña",
 log_in => "Acceder",
 title => "Titulo",
 bbcode => "Ayuda Bbcode",
-spancat => "De asignar más de una categoría a una entrada, use un &apos; por ejemplo: categoría1&apos;categoría2 ",
+spancat => "De asignar más de una categoría a una entrada, use un ' por ejemplo: categoría1'categoría2 ",
 ispage => "es una página",
 spanpage => "Una página es básicamente una entrada que está enlazado en el menú y no se muestra normalmente",
 ishtml => "es HTML",
@@ -562,16 +564,15 @@ by => "de ",
 addcomment => "Deja comentario ",
 delcomment => "Borrar comentario",
 pages => "Páginas: ",
-nopages1 => "No hay páginas aún, quiere",
-nopages2 => "hacer una",
-nocategory => "No hay entradas en esta categoría.",
+nopages1 => "No hay páginas aún.",
+nopages2 => "Quiere hacer una?",
 noplugin => "¡Lo siento, el plugin no parece estar instalado!",
 deentry => "Entrada borrado",
 config => "Hay algo mal con su configuración. Presentar con pe_Config.pl.bak. El blog tal vez no está funcionando, como usted quiere?",
 newcomments => "Comentarios recientes",
 comment => "Comentario",
 postunder => "Publicado en",
-captcha => "Código de seguridad no coincide. Por favor, inténtelo de nuevo",
+captcha => "Adíos spam bot",
 question => "Respuesta de seguridad es incorrecto. Por favor, inténtelo de nuevo.",
 compass => "Contraseña incorrecta para este nombre de usuario. Por favor inténtelo de nuevo o elija otro nombre.",
 newuser => "Usted es un nuevo usuario publicar aquí...Su nombre de usuario será añadido a una base de datos. ¡Recuerde su contraseña!",
@@ -626,6 +627,7 @@ quote => "Mostrar código o citar a alguien",
 http => "enlace",
 img => "insertar una imagen (camino)",
 box => "Una caja de luz (imagen o texto)",
+pot => "Una trampa por los spam bots, por favor no llenarlo",
 };
 
 $locale {"CUSTOM"} = {
@@ -649,6 +651,7 @@ menu => "Main menu",
 index => "Index",
 new => "New entry",
 pag => "Pages",
+plug => "Plugins",
 listPag => "List Pages",
 archive => "Archive",
 rss=> "RSS Feeds",
@@ -668,12 +671,12 @@ msglog_out => "You have logged out. Goodbye!",
 msglogged => "You are logged in. Welcome!",
 msgpass => "Wrong password!",
 msgcookie => "Please allow cookies.",
-msgfile => "Not possible to write in &apos;tmp&apos; Folder",
+msgfile => "Not possible to write in 'tmp' Folder",
 pass => "Please enter your password:",
 log_in => "Log in",
 title => "Title",
 bbcode => "Bbcode help",
-spancat => "To assign more than one category to a post, use a &apos; example: category1&apos;category2 ",
+spancat => "To assign more than one category to a post, use a ' example: category1'category2 ",
 ispage => "is a page",
 spanpage => "A page is basically a post which is linked in the menu and not displayed normally",
 ishtml => "is HTML",
@@ -699,16 +702,15 @@ by => "by ",
 addcomment => "Add Comment",
 delcomment => "Delete Comment",
 pages => "Pages: ",
-nopages1 => "No Pages yet, why don&apos;t you",
-nopages2 => "make one",
-nocategory => "No posts under this category.",
+nopages1 => "No entries yet.",
+nopages2 => "Why don't you make one?",
 noplugin => "Sorry, the plugin does not seem to be installed!",
 deentry => "Entry deleted",
 config => "There is something wrong with your Config. file using pe_Config.pl.bak. The blog is working, but maybe not how you want to?",
 newcomments => "Newest Comments",
 comment => "Comment",
 postunder => "Posted under",
-captcha => "Security Code does not match. Please, try again",
+captcha => "You are a spam bot, please go home",
 question => "Incorrect security answer. Please, try again.",
 comtwice=>"Comment has already been posted",
 compass => "Wrong password for this nickname. Please try again or choose another nickname.",
@@ -764,10 +766,8 @@ quote => "Show code or quote someone",
 http => "Clickable link",
 img => "insert an image (path)",
 box => "A lightbox (image or text)",
+pot => "Honeypot for spam bots, if you are human leave this empty",
 };
-
-
-
 
 return 1;
 

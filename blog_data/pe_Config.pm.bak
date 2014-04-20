@@ -13,7 +13,7 @@ our $config_blogFooter='';														# on bottom of page
 our $config_blogTitle = 'blog';													# Blog title 
 
 #Folders:																		
-our $config_DatabaseFolder = './blog';										# Full path	should be outside of server home, but needs to be read and writable by server
+our $config_DatabaseFolder = $ENV{'DOCUMENT_ROOT'}.'/pe_pplog/blog_data';										# Full path	should be outside of server home, but needs to be read and writable by server
 our $config_smiliesFolder = '/pe_pplog/images/smilies';									# Relative path from server home. For the smilies, add and change smilies as you wish
 our $config_currentStyleFolder = '/pe_pplog/css';										# Styles folder 
 our $config_currentStyleSheet = 'style.css';									# Style sheet name

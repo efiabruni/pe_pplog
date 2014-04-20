@@ -29,7 +29,7 @@ use CGI':all';
 use POSIX qw(ceil floor);
 use POSIX qw/strftime/; #sc0ttman
 						
-do "./blog/pe_Config.pl" or (require "./blog/pe_Config.pl.bak"); #change the path to the /blog folder on your computer
+do "blog_data/pe_Config.pm" or (require "blog_data/pe_Config.pm.bak"); #change the path to the /blog folder on your computer
 require "$config_DatabaseFolder/sub.pl"; 
 
 # efia redirect for https 10.07.13
@@ -594,13 +594,13 @@ elsif(r('BbcodeHelp')ne '')
 elsif (grep {$_ eq r('do') } @config_pluginsAdmin) #24.05.13 plugin section
 {
 	my $plugin = r('do');
-	do "$config_DatabaseFolder/$plugin.pl" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
+	do "$config_DatabaseFolder/plugins/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
 }
 
 elsif (grep {$_ eq r('process') } @config_pluginsAdmin)
 {
 	my $plugin = r('process');
-	do "$config_DatabaseFolder/$plugin.pl" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
+	do "$config_DatabaseFolder/plugins/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
 }
 else
 #front page
@@ -676,7 +676,7 @@ else
 	print '</br>'.$locale{$lang}->{deentry};
 }
 	#Warning if back up Config file is used
-	do "$config_DatabaseFolder/pe_Config.pl" or print $locale{$lang}->{config};
+	do "$config_DatabaseFolder/pe_Config.pm" or print $locale{$lang}->{config};
 #show latest comments	
 	print '<h1>'.$locale{$lang}->{newcomments}.'</h1>';
 	my @comments = getComments();
