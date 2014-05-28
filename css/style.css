@@ -51,7 +51,7 @@ div#header{background:#6699CC; width:1091px; margin-left:0px; margin-right:0px; 
 #header .drop{display:none; list-style:none;}
 #header .menu:hover ul{display:block; position:absolute; width:200px; max-height:300px; margin-top:9px; overflow-y:scroll;}
 
-div#header a {color: white; font-size: 15px; text-transform: uppercase; text-decoration:none; letter-spacing: -1px; padding:5px; padding-bottom:10px;}
+div#header a {color: white; font-size: 15px; font-variant:small-caps; text-decoration:none; letter-spacing: -1px; padding:5px; padding-bottom:10px;}
 div#header a:hover {background-color:#EEEEEE; color:#3366CC; }
 /*drop down menu end*/
 
@@ -73,6 +73,7 @@ div#content {
 	font-weight:normal;
 	color: #003300;
 	text-transform: capitalize;
+	
 	margin-bottom: 5px;
 	padding: 0px;
 }
@@ -181,7 +182,24 @@ textarea, pre {padding: 10px; overflow: scroll; width:100%;}
 textarea#content {height:300px;}
 textarea#comContent { height:200px; max-width:550px;}
 
-pre {line-height: 10px;}
+pre {line-height: 10px; font-family:monospace;}
+
+blockquote::before {
+	
+	content: "\201C";
+	font-size: 40px;
+	
+}
+
+blockquote
+{ 	
+	font-family: serif;
+	font-size: 16px;
+	background-color:#EEEEEE;
+	font-style:italic;
+	padding:10px;
+	padding-top:0px;
+}
 /*side menu*/
 nav  {
 	float: right;
@@ -199,7 +217,8 @@ nav h1 {
 	margin-top: 10px;
 	margin-bottom: 0px;
 	font-size: 16px;
-	text-transform: uppercase;
+	text-transform: capitalize;
+	font-variant:small-caps;
 }
 
 nav a {
@@ -265,30 +284,6 @@ input:focus + .box *{opacity:1;}
 	color: #006600;
 	text-decoration: none;
 	letter-spacing: -1px;
-}
-.ribbon {
-  background-color: #3366CC;
-  width:40%;
-  overflow: hidden;
-  position: fixed;
-  left: 75%;
-  top: 7%;	
-  -moz-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  box-shadow: 0 0 1em #4D4D4D;
-
-}
-.ribbon a {
-  border: 1px solid white;
-  color: white;
-  display: block;
-  font: bold 100% 'Helvetiva Neue', Helvetica, Arial, sans-serif;
-  margin: 0 1%;
-  padding:2% 0%;
-  text-align: center;
-  text-decoration: none;
 }
 
 @media print {
