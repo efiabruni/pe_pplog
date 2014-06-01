@@ -20,8 +20,10 @@ our $config_currentStyleSheet = 'style.css';									# Style sheet name
 our $config_tmpFolder = '/tmp';													# path to the tmp folder
 
 #Look and Feel:
+our %config_blogSettings = (JQuery=>1, HTTPS=>1, markup=>"", plugins=>"");
+our %config_adminSettings = (JQuery=>1, HTTPS=>1, markup=>"bbcode", plugins=>"notes");
+
 our $lang = "EN";																# Language setting (EN, DE, EL, CUSTOM), for custom language type "CUSTOM" and add translation below at $locale{"CUSTOM"}=
-our $config_enableJQuery = 1;													# Is needed for lightboxes and other special effects to work, and if you want to put custom HMTL in the head
 our $config_entriesPerPage = 5;													# For pagination... How many
 our $config_maxPagesDisplayed = 5;												# Maximum number of pages displayed at the 
 our $config_gmt = -4;															# Your GMT, -4 is Chile
@@ -39,7 +41,7 @@ our $config_usersOnlineTimeout = 120;											# How long is an user considered
 
 #Comments settings:
 our $config_allowComments = 1;													# Allow comments
-our @config_commentsForbiddenAuthors = qw/admin administrator/;					# These are the usernames that normal users, first name is default for Admin comments 
+our @config_commentsForbiddenAuthors = qw(admin administrator);					# These are the usernames that normal users, first name is default for Admin comments 
 #Security question for comments ('Question'=>'Answer','Question2'=>'Answer2')
 our %config_commentsSecurityQuestion =('Spell 4'=>'four','What is 2 plus 3? (Number)'=>'5','What do you call a baby dog?'=>'Puppy');#Password for comments. <a href="?do=contact">Register</a>'
 
@@ -56,13 +58,10 @@ our $config_metaDescription = 'pe_pplog';				            		    # Description for
 our $config_metaKeywords = 'post, perl, blog';			  						# Keywords for search engines...
 			
 #Security
-our $config_useHTTPSlogin = 0;													# choose 1 if you want it only to be possible to login when using a secure connection
 our $config_randomString = 'zjhd092nmbd20dbJASDK1BFGAB1';						# This is for password encryption... Edit if you wish
-our @config_ipBan = qw/202.325.35.145 165.265.26.65/;							# 2 random IPS, sorry if it is yours... Just edit if that is the case
+our @config_ipBan = qw(202.325.35.145 165.265.26.65);							# 2 random IPS, sorry if it is yours... Just edit if that is the case
 
 #adding things
-our @config_pluginsBlog = qw(contact);											#available: contact Add here the plugin files you want to use
-our @config_pluginsAdmin = qw(editConfig notes emails upload);					#available: editConfig notes emails upload
 our $config_contactAddress = ''; 												#for contact form plugin
 our @config_uploadFolders = qw(/images /css); 									#path to folder for files from webserver root
 our @config_allowedMime = qw(image/ text/css text/html text/plain);			    #MIME types allowed for upload

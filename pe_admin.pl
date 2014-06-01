@@ -33,7 +33,7 @@ do "blog_data/pe_Config.pm" or (require "blog_data/pe_Config.pm.bak"); #change t
 require "$config_DatabaseFolder/sub.pl"; 
 
 # efia redirect for https 10.07.13
-if ($config_useHTTPSlogin == 1){
+if ($config_blogSettings{HTTPS} == 1){
 	my $url = url(-full=>1);
 	if ($url =~ /^http:/) {
 		unless ($ENV{'HTTP_X_FORWARDED_PROTO'} eq "https"){
@@ -86,7 +86,7 @@ print '<!DOCTYPE html>
 <meta name="Robots" content="none" />
 <meta name="Viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scaleable=yes"/>
 <title>'.$locale{$lang}->{$admin}.' - '.$locale{$lang}->{powered}.'</title>';
-if($config_enableJQuery == 1)	
+if($config_blogSettings{JQuery} == 1)	
 {
 	JQuery(); 
 }
