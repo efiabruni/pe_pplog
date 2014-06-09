@@ -43,7 +43,7 @@ our $config_usersOnlineTimeout = 120;											# How long is an user considered
 our $config_allowComments = 1;													# Allow comments
 our @config_commentsForbiddenAuthors = qw(admin administrator);					# These are the usernames that normal users, first name is default for Admin comments 
 #Security question for comments ('Question'=>'Answer','Question2'=>'Answer2')
-our %config_commentsSecurityQuestion =('Spell 4'=>'four','What is 2 plus 3? (Number)'=>'5','What do you call a baby dog?'=>'Puppy');#Password for comments. <a href="?do=contact">Register</a>'
+our %config_commentsSecurityQuestion =('Spell 4'=>'four','What is two plus three? (spell)'=>'five','What do you call a baby dog?'=>'Puppy');#Password for comments. <a href="?do=contact">Register</a>'
 
 our $config_bbCodeOnCommentaries = 1;											# Allow BBCODE buttons on comments entry page
 our $config_commentsMaxLenght = 2000;											# Comment maximum characters
