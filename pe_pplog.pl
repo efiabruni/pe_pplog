@@ -33,18 +33,19 @@ do "./blog_data/pe_Config.pm" or (require "./blog_data/pe_Config.pm.bak"); #chan
 require "$config_DatabaseFolder/sub.pl"; 
 
 if(r('do') eq 'RSS')
+if(r('do') eq 'RSS')
 {
-	my @baseUrl = split(/\?/, 'http://'.$ENV{'HTTP_HOST'}.$ENV{'REQUEST_URI'});
-	my $base = $baseUrl[0];
+	my $base = $ENV{'SCRIPT_URI'};
 	my @entries = getFiles($config_postsDatabaseFolder);
 	my $limit;
 	
-	print header(-charset => qw(utf-8)), '<?xml version="1.0" encoding="UTF-8"?>
-	<rss version="2.0">
+	print header(-type=>'text/xml',-charset => qw(utf-8)), '<?xml version="1.0" encoding="UTF-8"?>
+	<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
+	<atom:link href="https://'.$ENV{'HTTP_HOST'}.$ENV{'REQUEST_URI'}.'" rel="self" type="application/rss+xml" />
 	<title>'.$config_blogTitle.'</title>
 	<description>'.$config_metaDescription.'</description>
-	<link>http://'.$ENV{'HTTP_HOST'}.substr($ENV{'REQUEST_URI'},0,length($ENV{'REQUEST_URI'})-7).'</link>';
+	<link>'.$base.'</link>';
 	
 	if($config_entriesOnRSS == 0)
 	{
@@ -61,8 +62,7 @@ if(r('do') eq 'RSS')
 		my $content = $finalEntries[1];
 		$content =~ s/\</&lt;/gi;
 		$content =~ s/\>/&gt;/gi;
-		print '<item>
-		<link>'.$base.'?viewDetailed='.$finalEntries[4].'</link>
+		print '<item><guid>'.$base.'?viewDetailed='.$finalEntries[4].'</guid>
 		<title>'.$finalEntries[0].'</title>
 		<category>'.$finalEntries[3].'</category>
 		<description>'.$content.'</description>
