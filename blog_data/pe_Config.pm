@@ -20,7 +20,7 @@ our $config_currentStyleSheet = 'style.css';									# Style sheet name
 our $config_tmpFolder = '/tmp';													# path to the tmp folder
 
 #Look and Feel:
-our %config_blogSettings = (JQuery=>1, HTTPS=>1, markup=>"", plugins=>"");
+our %config_blogSettings = (JQuery=>1, HTTPS=>1, markup=>"plaintext", plugins=>"");
 our %config_adminSettings = (JQuery=>1, HTTPS=>1, markup=>"bbcode", plugins=>"notes");
 
 our $lang = "EN";																# Language setting (EN, DE, EL, CUSTOM), for custom language type "CUSTOM" and add translation below at $locale{"CUSTOM"}=

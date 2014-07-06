@@ -31,6 +31,7 @@ use POSIX qw/strftime/; #sc0ttman
 						
 do "./blog_data/pe_Config.pm" or (require "./blog_data/pe_Config.pm.bak"); #change the path to the /blog folder on your computer
 require "$config_DatabaseFolder/sub.pl"; 
+do "$config_DatabaseFolder/plugins/$config_blogSettings{markup}.pl" or require "$config_DatabaseFolder/plugins/plaintext.pl";
 
 if(r('do') eq 'RSS')
 if(r('do') eq 'RSS')
@@ -442,11 +443,6 @@ elsif(r('do') eq 'archive')
 elsif(r('do') eq 'listComments')
 {
 	listComments();
-}
-#bbcode help
-elsif (r('BbcodeHelp') ne '')
-{
-	BbcodeHelp();
 }
 
 elsif (grep {$_ eq r('do') } @config_pluginsBlog) #24.05.13 plugin section

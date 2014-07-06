@@ -260,10 +260,13 @@ input:focus + .box *{opacity:1;}
 			transition:opacity 2s;
 			background:white;
 			color: #333333;
+			text-align:left;
 			margin-left:auto;
 			margin-right:auto;
 			max-width:80%;
 			max-height:80%;
+			overflow:auto;
+			padding: 2px;
 		}
 
 		

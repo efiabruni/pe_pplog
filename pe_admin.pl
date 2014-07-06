@@ -31,6 +31,7 @@ use POSIX qw/strftime/; #sc0ttman
 						
 do "blog_data/pe_Config.pm" or (require "blog_data/pe_Config.pm.bak"); #change the path to the /blog folder on your computer
 require "$config_DatabaseFolder/sub.pl"; 
+do "$config_DatabaseFolder/plugins/$config_adminSettings{markup}.pl" or require "$config_DatabaseFolder/plugins/plaintext.pl";
 
 # efia redirect for https 10.07.13
 if ($config_blogSettings{HTTPS} == 1){
@@ -585,11 +586,7 @@ elsif(r('do') eq 'archive')
 {
 	doArchive();
 }
-#bbcode help page
-elsif(r('BbcodeHelp')ne '')
-{
-	BbcodeHelp();
-}
+
 #do plugins from external file
 elsif (grep {$_ eq r('do') } @config_pluginsAdmin) #24.05.13 plugin section
 {
