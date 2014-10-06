@@ -37,7 +37,7 @@ s/\[i\](.+?)\[\/i\]/<i>$1<\/i>/gi;
 s/\[u\](.+?)\[\/u\]/<u>$1<\/u>/gi;
 s/\[\*\](.+?)\[\/\*\]/<li>$1<\/li>/gi;
 s/\[list\](.+?)\[\/list\]/<ul>$1<\/ul>/gi;
-s/\[list=1\](.+?)\[\/list\]/<ol>$2<\/ol>/gi;
+s/\[list=1\](.+?)\[\/list\]/<ol>$1<\/ol>/gi;
 s/\[img\]\s?(\S+?)\s?\[\/img\]/"<img src="._url($1)." \/>"/gei;
 s/\[img=(\S+?)\s?\](\S+?)\[\/img\]/"<img src="._url($2)." alt="._alt($1)." \/>"/gei;
 s/\[url\]\s?(\S+?)\s?\[\/url\]/<a href=$1>$1<\/a>/gi;
@@ -87,14 +87,14 @@ s/\<i\>(.+?)\<\/i\>/\[i\]$1\[\/i\]/gi;
 s/\<u\>(.+?)\<\/u\>/\[u\]$1\[\/u\]/gi;
 s/\<li\>(.+?)\<\/li\>/\[\*\]$1\[\/\*\]/gi;
 s/\<ul\>(.+?)\<\/ul\>/\[list\]$1\[\/list\]/gi;
-s/\<li\>(.+?)\<\/li\>/\[list=1\]$1\[\/list\]/gi;
+s/\<ol\>(.+?)\<\/ol\>/\[list=1\]$1\[\/list\]/gi;
 s/\<p style=(.+?) \>(.+?)\<\/p\>/\[style=$1\]$2\[\/style\]/gi; # Efia more text styling options
 s/\<img src=$config_smiliesFolder\/(.+?).png \/\>/\[$1\/\]/gi; #Efia added smilies!
 s/\<img src=(\S+?) alt=(.+?) \/>/"\[img="._decode($2)."\]"._decode($1)."\[\/img\]"/gei;
 s/\<img src=(.+?) \/>/"\[img\]"._decode($1)."\[\/img\]"/gei;
 s/<a href=(.+?)>(.+?)\<\/a\>/"\[url="._decode($1)."\]$2\[\/url\]"/gei;
 s/\<pre><code\>(.+?)\<\/code\><\/pre>/\[code\]$1\[\/code\]/gi; #Efia, also serves for quoting updated div=code to <code>
-s/\<blockquote>(.+?)\<\/blockquote>/\[quote\]$1\[\/quote\]/gi; #Efia, also serves for quoting updated div=code to <code>
+s/\<blockquote><p>(.+?)\<\/p\>\<\/blockquote>/\[quote\]$1\[\/quote\]/gi; #Efia, also serves for quoting updated div=code to <code>
 s/<input (.+?) src=(.+?) \/><div class=box><h3>(.+?)<\/h3>(.+?)<\/div>/\[box=$2\]$4\[\/box\]/gi;
 
 	return $_;
