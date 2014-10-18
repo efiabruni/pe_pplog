@@ -448,13 +448,13 @@ elsif(r('do') eq 'listComments')
 elsif (grep {$_ eq r('do') } @config_pluginsBlog) #24.05.13 plugin section
 {
 	my $plugin = r('do');
-	do "$config_DatabaseFolder/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
+	do "$config_DatabaseFolder/plugins/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
 }
 #processes for plugin
 elsif (grep {$_ eq r('process') } @config_pluginsBlog)
 {
 	my $plugin = r('process');
-	do "$config_DatabaseFolder/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
+	do "$config_DatabaseFolder/plugins/$plugin.pm" or print '<br />'.$locale{$lang}->{noplugin}.' <a href="?page=1">'.$locale{$lang}->{back}.'</a>';
 }
 
 else
