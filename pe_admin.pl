@@ -259,8 +259,8 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 		}
 		if (r('Submit') eq $locale{$lang}->{newnote} || r('Submit') eq $locale{$lang}->{subentry}) 
 		{
-			my $dir = '/posts'; #according to submit button
-			   $dir = '/notes' if (r('Submit') eq $locale{$lang}->{newnote}); #for Notes
+			my $dir = 'posts'; #according to submit button
+			   $dir = 'notes' if (r('Submit') eq $locale{$lang}->{newnote}); #for Notes
 			my @files = getFiles($config_DatabaseFolder.$dir);
 			my @lastOne = split(/¬/, $files[0]);
 			
