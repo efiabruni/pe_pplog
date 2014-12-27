@@ -275,7 +275,7 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 			$fileName = "$dir/$fileNum";
 		}
 
-		open(FILE, ">$config_DatabaseFolder/$fileName.$config_dbFilesExtension");
+		open(FILE, ">$config_DatabaseFolder.$fileName.$config_dbFilesExtension");
 		print FILE $title.'¬'.$content.'¬'.$date.'¬'.$category.'¬'.$fileNum; # 0: Title, 1: Content, 2: Date, 3: Category, 4: FileName
 		close FILE;
 
