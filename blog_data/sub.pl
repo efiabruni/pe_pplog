@@ -495,9 +495,7 @@ sub doArchive
 	if ($years[$i]){
 		# Sort months
 		print "<h1><small>$years[$i]</small></h1>";
-		my @months = qw(Dic Nov Oct Sep Aug Jul Jun May Apr Mar Feb Jan);
-		my %print = (Jan=>"January", Feb=>"February", Mar=>"March", Apr=>"April", May=>"May", 
-		Jun=>"June", Jul=>"July", Aug=>"August", Sep=>"September", Oct=>"October", Nov=>"November", Dic=>"December");
+		my @months = qw(Dec Nov Oct Sep Aug Jul Jun May Apr Mar Feb Jan);
 		
 		for my $actualMonth(@months){ 
 			my @entries = grep{/$actualMonth\s$years[$i]/}@dates;
