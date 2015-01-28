@@ -26,7 +26,7 @@ our %config_adminSettings = (JQuery=>1, HTTPS=>1, markup=>"bbcode", plugins=>"no
 our $lang = "EN";																# Language setting (EN, DE, EL, CUSTOM), for custom language type "CUSTOM" and add translation below at $locale{"CUSTOM"}=
 our $config_entriesPerPage = 5;													# For pagination... How many
 our $config_maxPagesDisplayed = 5;												# Maximum number of pages displayed at the 
-our $config_gmt = -4;															# Your GMT, -4 is Chile
+our $config_gmt = "-04:00";															# Your GMT, "-04:00" is Chile
 our $config_entriesOnRSS = 0;													# 0 = ALL ENTRIES, if you want a limit, change t
 
 #Menu options:

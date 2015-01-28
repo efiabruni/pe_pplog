@@ -37,24 +37,29 @@ sub getIP #return ip in standard format
 	return $ip;
 }
 
-sub getdate #time according to given timezone
+sub getdate
 {
-	my $gmt = $_[0];
+	#my $gmt = $_[0];
+	my $var = shift;
 	my $day = 1440;
 	my $hour =  60;
-	$gmt = $gmt*60;
+	my @gmts = split(':',$var); 
+	my $gmts1 = $gmts[1];
+	$gmts1 = -$gmts1 if $gmts[0]=~ /^(-)/; #to account for -gmts 
+	$gmt = $gmts[0]*60+$gmts1; 
 	my $date = gmtime;
 	my @dat = split(' ', $date);
 	my @time = split(':',$dat[3]);
 	
-	my $minutes=$time[1]+($time[0]*60)+($dat[2]*1440);#everything in minutes
+	my $minutes=$time[1]+($time[0]*60)+($dat[2]*1440);
 	my $value=$minutes+$gmt;
 	my @time = ();
 
-	my $d = int($value/$day); push (@time, $d); $value = ($value%$day);#calculate day
-	my $h = int($value/$hour); push (@time, $h); $value = ($value%$hour);#hour
+	my $d = int($value/$day); push (@time, $d); $value = ($value%$day);
+	my $h = int($value/$hour); push (@time, $h); $value = ($value%$hour);
 	unless ($value =~ /\d\d/){$value = '0'.$value;}
 	push (@time, $value);
+
 	
 	return $time[0].' '.$dat[1].' '.$dat[4].', '.$time[1].':'.$time[2];
 }
