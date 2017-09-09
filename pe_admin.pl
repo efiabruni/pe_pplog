@@ -261,7 +261,7 @@ elsif(r('viewDetailed') ne '' ||r('process') eq 'doEntry'|| r('process') eq 'doC
 		{
 			my $dir = 'posts'; #according to submit button
 			   $dir = 'notes' if (r('Submit') eq $locale{$lang}->{newnote}); #for Notes
-			my @files = getFiles($config_DatabaseFolder.$dir);
+			my @files = getFiles("$config_DatabaseFolder/$dir");
 			my @lastOne = split(/¬/, $files[0]);
 			
 			if($lastOne[4] eq '') #new file with latest number
